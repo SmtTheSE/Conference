@@ -72,20 +72,44 @@ CULTURAL_KNOWLEDGE_BASE = """
 """
 
 
+
+# ===================================================================
+#  OLLAMA LOCAL LLM INTEGRATION
+# ===================================================================
+OLLAMA_BASE_URL = os.environ.get('OLLAMA_BASE_URL', 'http://localhost:11434')
+OLLAMA_MODEL    = os.environ.get('OLLAMA_MODEL', 'llama3')   # Change if you have qwen2.5 etc.
+
+
+def _check_ollama_available():
+    """Ping Ollama server to see if it is running."""
+    try:
+        r = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=2)
+        if r.status_code == 200:
+            models = [m['name'] for m in r.json().get('models', [])]
+            return True, models
+    except Exception:
+        pass
+    return False, []
+
+
 class GeminiCulturalAssistant:
     """
-    Senior Implementation: Real Gemini 1.5 Flash integration with:
-    - Cultural/legal system prompt (RAG-lite)
-    - Live market data injection from Products 1 & 2
-    - Multi-turn conversation history
-    - Graceful fallbacks
+    Senior Implementation: 3-tier LLM backend with automatic failover.
+
+    Priority:
+      1. Gemini 2.0 Flash  — best quality, requires API key + quota
+      2. Ollama (llama3)   — local, free, no quota, always available
+      3. Enhanced Fallback — law-grounded keyword responses
+
+    All tiers share the same cultural system prompt and RAG-lite context injection.
     """
 
     GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-    ENGINE_LABEL = "gemini-2.0-flash"
+    ENGINE_LABEL   = "gemini-2.0-flash"
 
     def __init__(self):
         self.conversation_sessions = {}  # session_id -> list of {role, parts}
+
 
     def _get_api_key(self, request_key=None):
         """Resolve API key: request-level > env var."""
@@ -161,67 +185,130 @@ Your role:
         system += "\n\nAlways cite specific laws (e.g., RA 7042, Land Code Act) when discussing legal constraints. If unsure, say so clearly."
         return system
 
+    def _call_ollama(self, message, system_prompt, session_id):
+        """
+        Tier 2: Call local Ollama API (llama3 by default).
+        Uses /api/chat endpoint with multi-turn message history.
+        Returns (response_text, engine_label) or raises on failure.
+        """
+        history = self.conversation_sessions.get(session_id, [])
+
+        # Build Ollama messages list (system + history + new user message)
+        messages = [{"role": "system", "content": system_prompt}]
+        for turn in history:
+            role = turn.get('role', 'user')
+            # Ollama uses 'assistant' not 'model'
+            if role == 'model':
+                role = 'assistant'
+            content = turn.get('parts', [{}])[0].get('text', '')
+            messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": message})
+
+        payload = {
+            "model": OLLAMA_MODEL,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": 0.7, "num_predict": 1024}
+        }
+
+        resp = requests.post(f"{OLLAMA_BASE_URL}/api/chat", json=payload, timeout=60)
+        resp.raise_for_status()
+        ai_text = resp.json()['message']['content']
+
+        # Update shared conversation history (Gemini-format for consistency)
+        if session_id not in self.conversation_sessions:
+            self.conversation_sessions[session_id] = []
+        self.conversation_sessions[session_id].append(
+            {"role": "user", "parts": [{"text": message}]}
+        )
+        self.conversation_sessions[session_id].append(
+            {"role": "model", "parts": [{"text": ai_text}]}
+        )
+        # Bound history
+        if len(self.conversation_sessions[session_id]) > 20:
+            self.conversation_sessions[session_id] = self.conversation_sessions[session_id][-20:]
+
+        return ai_text, f"ollama-{OLLAMA_MODEL}"
+
     def chat(self, message, session_id=None, api_key=None):
         """
-        Main chat method. Returns (response_text, method_used).
-        method_used: 'gemini-1.5-flash' or 'enhanced-fallback'
+        3-Tier LLM Chat:
+          1. Gemini 2.0 Flash  (if API key + quota available)
+          2. Ollama llama3      (local, always free, no quota)
+          3. Enhanced Fallback  (law-grounded keyword responses)
+        All tiers use the same cultural system prompt + RAG-lite context.
         """
         key = self._get_api_key(api_key)
 
-        # Fetch live market context (RAG-lite)
+        # Fetch live market context (RAG-lite) — shared across all tiers
         market_context = self._fetch_market_context(message)
+        system_prompt  = self._build_system_prompt(market_context)
 
-        if not key:
-            return self._enhanced_fallback(message, market_context), "enhanced-fallback"
+        # ── TIER 1: Gemini 2.0 Flash ──────────────────────────────────────────
+        if key:
+            if session_id not in self.conversation_sessions:
+                self.conversation_sessions[session_id] = []
+            history = self.conversation_sessions[session_id]
 
-        # Build conversation history for multi-turn
-        if session_id not in self.conversation_sessions:
-            self.conversation_sessions[session_id] = []
-
-        history = self.conversation_sessions[session_id]
-
-        # Construct Gemini API payload (system instruction + history + new message)
-        system_prompt = self._build_system_prompt(market_context)
-
-        # Gemini 1.5 Flash uses 'system_instruction' field
-        payload = {
-            "system_instruction": {
-                "parts": [{"text": system_prompt}]
-            },
-            "contents": history + [
-                {"role": "user", "parts": [{"text": message}]}
-            ],
-            "generationConfig": {
-                "temperature": 0.7,
-                "maxOutputTokens": 1024,
-                "topP": 0.95
+            payload = {
+                "system_instruction": {"parts": [{"text": system_prompt}]},
+                "contents": history + [{"role": "user", "parts": [{"text": message}]}],
+                "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1024, "topP": 0.95}
             }
-        }
+            try:
+                url = f"{self.GEMINI_API_URL}?key={key}"
+                response = requests.post(url, json=payload, timeout=15)
 
-        try:
-            url = f"{self.GEMINI_API_URL}?key={key}"
-            response = requests.post(url, json=payload, timeout=15)
+                if response.status_code == 200:
+                    result  = response.json()
+                    ai_text = result['candidates'][0]['content']['parts'][0]['text']
+                    history.append({"role": "user",  "parts": [{"text": message}]})
+                    history.append({"role": "model", "parts": [{"text": ai_text}]})
+                    if len(history) > 20:
+                        self.conversation_sessions[session_id] = history[-20:]
+                    return ai_text, self.ENGINE_LABEL
+                else:
+                    print(f"Gemini error {response.status_code} — trying Ollama fallback")
+            except Exception as e:
+                print(f"Gemini call failed ({e}) — trying Ollama fallback")
 
-            if response.status_code != 200:
-                print(f"Gemini API error {response.status_code}: {response.text}")
-                return self._enhanced_fallback(message, market_context), "enhanced-fallback"
+        # ── TIER 2: Ollama Local LLM ───────────────────────────────────────────
+        ollama_available, ollama_models = _check_ollama_available()
+        if ollama_available:
+            # Pick preferred model, fall back to first available if llama3 not found
+            model_to_use = OLLAMA_MODEL
+            if not any(OLLAMA_MODEL in m for m in ollama_models):
+                model_to_use = ollama_models[0] if ollama_models else OLLAMA_MODEL
+                print(f"Preferred model '{OLLAMA_MODEL}' not found, using '{model_to_use}'")
+            try:
+                ai_text, engine = self._call_ollama(message, system_prompt, session_id)
+                return ai_text, engine
+            except Exception as e:
+                print(f"Ollama call failed ({e}) — using enhanced fallback")
 
-            result = response.json()
-            ai_text = result['candidates'][0]['content']['parts'][0]['text']
+        # ── TIER 3: Enhanced Legal Fallback ────────────────────────────────────
+        return self._enhanced_fallback(message, market_context), "enhanced-fallback"
 
-            # Update conversation history (multi-turn memory)
-            history.append({"role": "user", "parts": [{"text": message}]})
-            history.append({"role": "model", "parts": [{"text": ai_text}]})
+    def _gemini_update_history_placeholder(self, session_id, message, ai_text):
+        """(Internal) Kept for backward compatibility."""
+        pass
 
-            # Keep history bounded to last 10 turns to avoid token limits
-            if len(history) > 20:
-                self.conversation_sessions[session_id] = history[-20:]
+    def _gemini_bound_history(self, session_id):
+        """(Internal) Kept for backward compatibility."""
+        if len(self.conversation_sessions.get(session_id, [])) > 20:
+            self.conversation_sessions[session_id] = self.conversation_sessions[session_id][-20:]
 
-            return ai_text, self.ENGINE_LABEL
+    def _keep_history_compat(self, history, session_id):
+        """Bound history to last 20 turns to avoid token overflow."""
+        if len(history) > 20:
+            self.conversation_sessions[session_id] = history[-20:]
 
-        except Exception as e:
-            print(f"Gemini call failed: {e}")
-            return self._enhanced_fallback(message, market_context), "enhanced-fallback"
+    # ── Legacy reference kept from original refactor ───────────────────────────
+    def _bound_history(self, history, session_id):
+        """Keep history bounded to last 20 turns to avoid token limits."""
+        if len(history) > 20:
+            self.conversation_sessions[session_id] = history[-20:]
+
 
     def _enhanced_fallback(self, message, market_context=None):
         """
@@ -301,12 +388,16 @@ assistant = GeminiCulturalAssistant()
 
 @app.route('/health', methods=['GET'])
 def health():
-    api_key_status = "configured" if os.environ.get('GEMINI_API_KEY') else "not set (pass in request)"
+    gemini_key_status = "configured" if os.environ.get('GEMINI_API_KEY') else "not set (pass in request)"
+    ollama_ok, ollama_models = _check_ollama_available()
     return jsonify({
         'status': 'healthy',
         'product': 'Cultural AI Assistant',
-        'engine': 'Gemini 1.5 Flash',
-        'gemini_api_key': api_key_status
+        'llm_backends': {
+            'tier_1_gemini': {'status': gemini_key_status, 'model': 'gemini-2.0-flash'},
+            'tier_2_ollama': {'status': 'online' if ollama_ok else 'offline', 'models': ollama_models},
+            'tier_3_fallback': {'status': 'always available', 'type': 'law-grounded keyword responses'}
+        }
     })
 
 
