@@ -5,8 +5,18 @@ echo "🚀 Launching Pan-Asian Real Estate Intelligence Demo..."
 echo "Cleaning up ports..."
 lsof -ti:5001,5002,5003,8000 | xargs kill -9 2>/dev/null
 
-# Export API Key for Gemini Integration
-export GEMINI_API_KEY="AIzaSyAnx2QJ9awa1pBjMVNwOXbWojqYrKsWjOw"
+# --- API KEY SETUP ---
+# NEVER hardcode your API key here! Load it safely from a local .env file.
+# Create a file called .env in this directory with: GEMINI_API_KEY=your_key_here
+# That file is already listed in .gitignore so it will NEVER be pushed to GitHub.
+if [ -f ".env" ]; then
+    export $(grep -v '^#' .env | xargs)
+    echo "✅ Loaded API key from .env file"
+elif [ -z "$GEMINI_API_KEY" ]; then
+    echo "⚠️  WARNING: GEMINI_API_KEY is not set."
+    echo "   Create a .env file with: GEMINI_API_KEY=your_key_here"
+    echo "   Or run: export GEMINI_API_KEY=your_key_here before launching."
+fi
 
 # Start Backend APIs
 echo "Starting Product 1 (Global Market Intelligence)..."
