@@ -6,7 +6,7 @@ import numpy as np
 
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
-from models import YieldAnalyzer, GapScorer
+from models import YieldAnalyzer, GapScorer, MEICalculator
 from data_loader import UnifiedDataLoader
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ def after_request(response):
 print("Initializing Analyzers...")
 yield_analyzer = YieldAnalyzer()
 gap_scorer = GapScorer()
+mei_calculator = MEICalculator()
 data_loader = UnifiedDataLoader()
 
 @app.route('/health', methods=['GET'])
@@ -38,10 +39,10 @@ def get_yields():
     try:
         country_filter = request.args.get('country')
         yields = yield_analyzer.analyze_market(country_filter)
-        
+
         if yields is None or yields.empty:
             return jsonify({'insight': 'Scanning complete', 'data': []})
-            
+
         results = []
         for _, row in yields.iterrows():
             results.append({
@@ -51,7 +52,7 @@ def get_yields():
                 'median_rental_price_usd': float(row['rent']) if pd.notna(row['rent']) else 0,
                 'annual_yield_pct': float(row['annual_yield_pct'])
             })
-            
+
         return jsonify({
             'insight': f'Investment Locations ({country_filter or "Global"})',
             'data': results
@@ -70,28 +71,30 @@ def hotspots():
         df = data_loader.load_unified_data()
         sales = df[(df['transaction_type'] == 'sale') & (df['area_sqm'] > 0) & (df['price_usd'] > 0)].copy()
         sales['price_per_sqm'] = sales['price_usd'] / sales['area_sqm']
-        
+
         # Filter outliers
-        sales = sales[sales['price_per_sqm'].between(sales['price_per_sqm'].quantile(0.05), sales['price_per_sqm'].quantile(0.95))]
-        
+        sales = sales[sales['price_per_sqm'].between(
+            sales['price_per_sqm'].quantile(0.05),
+            sales['price_per_sqm'].quantile(0.95)
+        )]
+
         # Group by location
         location_stats = sales.groupby(['country', 'location'])['price_per_sqm'].agg(['count', 'median']).reset_index()
-        location_stats = location_stats[location_stats['count'] > 5] # Min 5 listings
-        
-        # Return all hotspots
-        hotspots = []
+        location_stats = location_stats[location_stats['count'] > 5]  # Min 5 listings
+
+        hotspots_list = []
         for _, row in location_stats.sort_values('median').iterrows():
-            hotspots.append({
+            hotspots_list.append({
                 'country': row['country'],
                 'location': row['location'],
                 'avg_price_per_sqm_usd': float(row['median']),
                 'listings_count': int(row['count']),
                 'tag': 'Value Investment'
             })
-                
+
         return jsonify({
             'insight': 'Emerging Hotspots (Value Entry)',
-            'data': hotspots
+            'data': hotspots_list
         })
 
     except Exception as e:
@@ -105,8 +108,8 @@ def gap_analysis():
     """
     try:
         country_filter = request.args.get('country')
-        gaps = gap_scorer.analyze_gap() # Returns DataFrame sorted by gap_score
-        
+        gaps = gap_scorer.analyze_gap()  # Returns DataFrame sorted by gap_score
+
         if country_filter:
             gaps = gaps[gaps['country'].str.lower() == country_filter.lower()]
 
@@ -120,7 +123,7 @@ def gap_analysis():
                 'supply_count': int(row['supply']),
                 'avg_price_usd': float(row['avg_price']) if pd.notna(row['avg_price']) else 0
             })
-            
+
         return jsonify({
             'insight': f'Market Gaps ({country_filter or "Global"})',
             'data': top_gaps
@@ -129,6 +132,46 @@ def gap_analysis():
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+
+@app.route('/mei_analysis', methods=['GET'])
+def mei_analysis():
+    """
+    Market Efficiency Index (MEI) — paper-aligned formula.
+
+    MEI = (Search Volume Index + Interest Density) / Median Price Per Sqm
+
+    Where:
+    - Search Volume Index = listing_velocity proxy (relative listing turnover rate)
+    - Interest Density    = normalized listing density (demand signal per area)
+
+    Returns ranked zones where community interest outpaces listing prices.
+    Optional ?country filter.
+    """
+    try:
+        country_filter = request.args.get('country')
+        mei_results = mei_calculator.calculate_mei(country_filter)
+
+        if mei_results.empty:
+            return jsonify({'insight': 'MEI Analysis complete', 'data': []})
+
+        results = []
+        for _, row in mei_results.iterrows():
+            results.append({
+                'country': row['country'],
+                'location': row['location'],
+                'mei_score': round(float(row['mei_score']), 4),
+                'search_volume_index': round(float(row['search_volume_index']), 4),
+                'interest_density': round(float(row['interest_density']), 4),
+                'median_price_per_sqm_usd': round(float(row['median_pps']), 2),
+                'supply_count': int(row['supply_count']),
+                'interpretation': row['interpretation']
+            })
+
+        return jsonify({
+            'insight': f'Market Efficiency Index — MEI ({country_filter or "Global"})',
+            'formula': 'MEI = (Search_Volume_Index + Interest_Density) / Median_Price_Per_Sqm',
+            'data': results
+        })
     except Exception as e:
         import traceback
         traceback.print_exc()
