@@ -77,7 +77,7 @@ CULTURAL_KNOWLEDGE_BASE = """
 #  OLLAMA LOCAL LLM INTEGRATION
 # ===================================================================
 OLLAMA_BASE_URL = os.environ.get('OLLAMA_BASE_URL', 'http://localhost:11434')
-OLLAMA_MODEL    = os.environ.get('OLLAMA_MODEL', 'llama3')   # Change if you have qwen2.5 etc.
+OLLAMA_MODEL    = os.environ.get('OLLAMA_MODEL', 'qwen2.5:7b')  # Best for SE Asian legal/cultural context
 
 
 def _check_ollama_available():
