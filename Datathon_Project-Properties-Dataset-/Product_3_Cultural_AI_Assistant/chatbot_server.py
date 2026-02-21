@@ -81,7 +81,8 @@ class GeminiCulturalAssistant:
     - Graceful fallbacks
     """
 
-    GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    ENGINE_LABEL = "gemini-2.0-flash"
 
     def __init__(self):
         self.conversation_sessions = {}  # session_id -> list of {role, parts}
@@ -216,7 +217,7 @@ Your role:
             if len(history) > 20:
                 self.conversation_sessions[session_id] = history[-20:]
 
-            return ai_text, "gemini-1.5-flash"
+            return ai_text, self.ENGINE_LABEL
 
         except Exception as e:
             print(f"Gemini call failed: {e}")
