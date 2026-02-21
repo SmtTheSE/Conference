@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pan-Asian Real Estate Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <div class="logo">RE:INTEL ASIA</div>
+                <div class="tagline">Shaping the Future of Investment</div>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-btn active" data-tab="intelligence">market_intel</button>
+                <button class="nav-btn" data-tab="scanner">Investment Scanner</button>
+                <!-- NEW FEATURE: Senior Engineer Dynamic Import -->
+                <button class="nav-btn" data-tab="datalab">Dynamic Data Lab 🧬</button>
+                <button class="nav-btn" data-tab="manage">Manage Data 🗑️</button>
+                <div class="nav-spacer"></div>
+                <button class="nav-btn" data-tab="assistant">cultural_ai</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Tab 1: Global Market Intelligence -->
+            <section id="intelligence" class="tab-content active">
+                <div class="intelligence-grid">
+                    <div class="form-card">
+                        <h3>Price Benchmarking Engine</h3>
+                        <br>
+                        <form id="priceForm">
+                            <div class="input-group">
+                                <label>Country</label>
+                                <select id="country">
+                                    <option value="">Loading countries...</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Location / District</label>
+                                <input type="text" id="locationSearch" placeholder="🔍 Search district..."
+                                    style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); border-color: rgba(0, 243, 255, 0.3);">
+                                <select id="location" name="location">
+                                    <option value="" disabled selected>Select country first...</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            <div class="input-group" style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <label>Bedrooms</label>
+                                    <input type="number" id="bedrooms" value="1">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label>Bathrooms</label>
+                                    <input type="number" id="bathrooms" value="1">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Area (sqm)</label>
+                                <input type="number" id="area" value="35">
+                            </div>
+                            <div class="input-group">
+                                <label>Property Type</label>
+                                <select id="type">
+                                    <option value="Condo">Condo / Apartment</option>
+                                    <option value="House">House / Villa</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="action-btn">ESTIMATE VALUE</button>
+                        </form>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Fair Market Valuation</h3>
+                        <div id="priceResult" class="price-display">
+                            <div style="color: var(--text-muted);">Estimated Asset Value</div>
+                            <div class="big-price">---</div>
+                            <div id="usdDisplay"
+                                style="font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem;">(USD: ---)</div>
+
+                            <div id="aiInsight"
+                                style="background: rgba(255,255,255,0.05); padding: 1rem; border-left: 3px solid var(--neon-green); font-style: italic; color: #fff; margin-bottom: 1rem; display: none;">
+                                "AI Insight will appear here..."
+                            </div>
+
+                            <div id="rentDisplay"
+                                style="margin-top: 1rem; font-size: 1.25rem; color: var(--neon-purple); display: none;">
+                                Monthly Rent: ---
+                            </div>
+                            <div id="demandDisplay"
+                                style="margin-top: 0.5rem; font-size: 1rem; color: var(--neon-blue); display: none;">
+                                Demand Score: ---/100
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Opportunity Scanner -->
+            <section id="scanner" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Smart Investment Scanner</h2>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="scannerCountry" class="input-field" style="width: auto; margin-bottom: 0;">
+                            <option value="">All Countries</option>
+                            <option value="Vietnam">Vietnam</option>
+                            <option value="Philippines">Philippines</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Malaysia">Malaysia</option>
+                        </select>
+                        <button id="scanBtn" class="action-btn"
+                            style="width: auto; padding: 0.5rem 1.5rem;">REFRESH</button>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 1rem; color: var(--neon-green);">🚀 High Yield Zones (ROI Focus)</h3>
+                <div id="yieldGrid" class="hotspot-grid">
+                    <div class="card" style="opacity: 0.5;">
+                        <h3>Loading Yields...</h3>
+                    </div>
+                </div>
+                <div id="yieldPagination" class="pagination-footer"
+                    style="display: flex; justify-content: center; gap: 1rem; margin: 1rem 0 3rem 0; align-items: center;">
+                    <!-- Pagation buttons will be injected here -->
+                </div>
+
+                <h3 style="margin-bottom: 1rem; color: var(--neon-purple);">💎 Market Gaps (Undervalued / High
+                    Potential)</h3>
+                <div id="gapGrid" class="hotspot-grid">
+                    <div class="card" style="opacity: 0.5;">
+                        <h3>Analyzing Gaps...</h3>
+                    </div>
+                </div>
+                <div id="gapPagination" class="pagination-footer"
+                    style="display: flex; justify-content: center; gap: 1rem; margin: 1rem 0; align-items: center;">
+                    <!-- Pagation buttons will be injected here -->
+                </div>
+            </section>
+
+            <!-- Tab 3: Cultural AI Assistant -->
+            <section id="assistant" class="tab-content">
+                <div class="chat-interface">
+                    <div id="chatWindow" class="chat-messages">
+                        <div class="message bot">
+                            Sawasdee krub / Xin chao! I am your Pan-Asian Real Estate Guide. Ask me about rental yields
+                            in Vietnam or price benchmarks in Bangkok.
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Ask anything about the Asian market..."
+                            style="flex: 1;">
+                        <button id="sendBtn" class="action-btn" style="width: auto;">SEND</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: Dynamic Data Lab -->
+            <section id="datalab" class="tab-content">
+                <div class="dashboard-grid">
+                    <!-- Upload Section -->
+                    <div class="input-card">
+                        <h2>🧬 Bring Your Own Data</h2>
+                        <p style="color:var(--text-muted); margin-bottom:1rem;">
+                            Upload any rental/property CSV. Our AI Agent will analyze the schema and build a forecasting
+                            model instantly.
+                        </p>
+
+                        <div class="form-group">
+                            <label>1. Upload Dataset (.csv)</label>
+                            <input type="file" id="csvUpload" accept=".csv"
+                                style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; width: 100%;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>2. Gemini API Key (for Analysis)</label>
+                            <input type="password" id="apiKey" value="AIzaSyAnx2QJ9awa1pBjMVNwOXbWojqYrKsWjOw"
+                                style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 4px;">
+                        </div>
+
+                        <button id="analyzeBtn" class="primary-btn"
+                            style="background: linear-gradient(90deg, #FF0080, #7928CA);">
+                            ⚡ Analyze & Build Model
+                        </button>
+                    </div>
+
+                    <!-- Analysis Results -->
+                    <div class="result-card" id="analysisResult" style="display:none;">
+                        <h3>🧠 AI Strategy Report</h3>
+                        <div id="aiStrategyContent" style="margin-bottom: 1rem; color: var(--text-muted);">
+                            Waiting for analysis...
+                        </div>
+
+                        <!-- Dynamic Model Output -->
+                        <div id="modelMetrics"
+                            style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; display:none;">
+                            <h4 style="color:var(--neon-green)">Model Trained Successfully 🚀</h4>
+                            <div class="metric-row"
+                                style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                                <span>Target Variable:</span>
+                                <span id="targetVar" style="font-weight:bold; color:#fff">---</span>
+                            </div>
+                            <div class="metric-row" style="display:flex; justify-content:space-between;">
+                                <span>Algorithm:</span>
+                                <span id="algoName" style="font-weight:bold; color:#fff">---</span>
+                            </div>
+                            <br>
+                            <button id="downloadModelBtn" class="primary-btn"
+                                style="width:100%; background: linear-gradient(90deg, #00D9FF, #7928CA);">
+                                💾 Download Model (.zip)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Model Reuse Section -->
+                    <div class="input-card" style="margin-top: 2rem;">
+                        <h2>🔄 Reuse Saved Model</h2>
+                        <p style="color:var(--text-muted); margin-bottom:1rem;">
+                            Upload a previously trained model and use it to predict on new data.
+                        </p>
+
+                        <div class="form-group">
+                            <label>1. Upload Saved Model (.zip)</label>
+                            <input type="file" id="modelUpload" accept=".zip"
+                                style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; width: 100%;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>2. Upload New Dataset (.csv)</label>
+                            <input type="file" id="newDataUpload" accept=".csv"
+                                style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px; width: 100%;">
+                        </div>
+
+                        <button id="predictBtn" class="primary-btn"
+                            style="background: linear-gradient(90deg, #FF0080, #FF8C00);">
+                            🎯 Predict on New Data
+                        </button>
+
+                        <div id="predictionResults" style="margin-top: 1rem; display:none;">
+                            <h4 style="color:var(--neon-green)">Predictions Ready! 📊</h4>
+                            <div id="predictionContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 4: Manage Data -->
+            <section id="manage" class="tab-content">
+                <div class="datalab-grid">
+                    <div class="form-card">
+                        <h3>🌍 Dynamic Countries</h3>
+                        <p style="opacity:0.7; margin-bottom:1rem;">Manage dynamically added countries (base 4 are
+                            protected)</p>
+                        <button id="refreshCountries" class="btn-primary" style="margin-bottom:1rem;">🔄 Refresh
+                            List</button>
+                        <div id="countriesTable" style="overflow-x:auto;">
+                            <p style="opacity:0.5;">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h3>🤖 Saved Models</h3>
+                        <p style="opacity:0.7; margin-bottom:1rem;">Manage your trained models</p>
+                        <button id="refreshModels" class="btn-primary" style="margin-bottom:1rem;">🔄 Refresh
+                            List</button>
+                        <div id="modelsTable" style="overflow-x:auto;">
+                            <p style="opacity:0.5;">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
