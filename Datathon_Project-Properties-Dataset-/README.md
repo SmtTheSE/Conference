@@ -1,70 +1,111 @@
-# 🌏 Pan-Asian Real Estate Intelligence Dashboard
-**A Data-Driven Investment Platform for the 2026 Research Conference**
+# 🌏 Ultimate Byteme: Pan-Asian Real Estate Intelligence
+**A Computational Intelligence Web-based Solution for Bridging Information Asymmetry in Emerging Real Estate Markets.**
 
-This platform is a comprehensive financial intelligence suite designed to analyze, predict, and scan real estate opportunities across the Pan-Asian market (Vietnam, Thailand, Philippines, and Malaysia). It leverages machine learning to bridge data gaps and provide actionable investment signals.
-
----
-
-## 🚀 Core Features (Products)
-
-### 1. 📊 Global Market Intelligence (Product 1)
-*   **Benchmarking**: Compare price-per-square-meter across different Southeast Asian borders.
-*   **Demand Analysis**: AI-driven demand proxies based on listing density and supply turnover.
-*   **Cross-Border Estimates**: Estimate rental income and market demand for any city in the supported regions.
-
-### 2. 💎 Investment Opportunity Scanner (Product 2)
-*   **High Yield Zones**: Identifies cities with the highest ROI (Return on Investment). Uses **Proxy Yield Modeling** to calculate returns even in regions with sparse rental data.
-*   **Market Gap Detection**: Scores locations based on the "Price-to-Supply" ratio, finding undervalued "hidden gems."
-*   **Full Data Browsing**: Paginated access to over 2,600+ analyzed investment zones.
-
-### 3. 🤖 Cultural AI Assistant (Product 3)
-*   **Nuance Detection**: A localized LLM-powered chatbot that explains regional property laws, cultural nuances (e.g., land ownership rules in Thailand vs. Vietnam), and market jargon.
-*   **Interactive Insights**: Query the assistant for deep-dives into specific scanner results.
-
-### 4. 🧪 Dynamic Data Lab
-*   **Dynamic CSV Upload**: Upload any new country dataset. The system auto-detects headers, fetches live exchange rates, and integrates the data into the global dashboard.
-*   **Model Management**: Train custom models, save them to disk, and use them for future predictions.
+*Developed for the 1st Synergia International Conference 2026.*  
+**Theme:** "Weaving Ideas, Celebrating Cultures, Shaping the Future"
 
 ---
 
-## 🧠 Underlying Logic & Math
+## 📖 1. Research Purpose & Context
+Information asymmetry in emerging Southeast Asian real estate markets (notably the Philippines, Thailand, Vietnam, and Malaysia) creates significant barriers to equitable investment and sustainable growth. Fragmentation in rental records and private transaction data often obscures true market value and fair-yield potential.
 
-### 🧬 Proxy Yield Modeling
-One of the key technical innovations for this research is how we handle **Data-Sparse Markets**. In regions like the Philippines where explicit rental data is often private, we use **Transfer Learning**:
-1.  We train a model on **50,000+ listings** from Vietnam (where Rent/Sale data is matched).
-2.  The model learns the mathematical curve of how area, price, and rooms affect yield.
-3.  We apply this curve as a financial proxy to Thailand and the Philippines to estimate investment returns with high accuracy.
-
-### 📈 Market Gap Scoring
-The Gap Score identifies "Market Friction":
-`Gap Score = (Price_Potential * Yield_Potential) / Supply_Density`
-High scores indicate areas that are **undersupplied** but have **high intrinsic value**, signaling a "Market Gap" ripe for investment.
+**Ultimate Byteme** is a multi-layered computational intelligence platform designed to bridge these informational gaps. By integrating a state-of-the-art LightGBM framework with proprietary Proxy Yield Modeling and localized Large Language Models (LLMs), the system establishes a computational ground truth. It democratizes institutional-grade intelligence for local stakeholders, fosters long-term economic stability, reduces speculative inflation, and promotes a transparent investment ecosystem tailored specifically to the Southeast Asian cultural context.
 
 ---
 
-## 🛠️ Technology Stack
-*   **Backend**: Python (Flask, Pandas, NumPy, LightGBM)
-*   **Frontend**: Vanilla HTML5, CSS3, JavaScript (Glassmorphism UI)
-*   **Data Storage**: Unified CSV Processing (Data Lake architecture)
-*   **NLP**: Specialized Cultural Real Estate LLM
+## 🚀 2. Core Architecture & Products
+
+The platform is architected around four synergistic AI modules unified under a modern Next.js dashboard featuring a clean, authoritative ASEAN-inspired design language.
+
+### 📊 Product 1: Global Market Intelligence (Valuation Engine)
+* **Predictive Pricing:** Estimates fair market value based on physical attributes (Area, Bedrooms, Bathrooms, Type) and geographic location using LightGBM.
+* **Cross-Border Rent Estimates:** Provides rental income projections for any city in the supported regions.
+* **Benchmark Comparisons:** Compares Price-Per-Square-Meter against national and regional averages.
+
+### 💎 Product 2: Investment Opportunity Scanner
+* **Proxy Yield Modeling:** The standout technical innovation. Handles "Data-Sparse Markets" like the Philippines by using *Transfer Learning*. The model learns the yield curve from 50,000+ matched listings in Vietnam, applying it as a financial proxy to accurately estimate returns in other nations.
+* **Market Efficiency Index (MEI):** Scans for "Value Gaps" to identify undervalued hidden gems. 
+  * `MEI = (Search Volume Index + Interest Density) / Median Price Per Sqm`
+  * Instead of just finding "cheap" land, MEI flags zones where localized demand is rapidly outpacing current listing prices (e.g., La Union, Iloilo).
+
+### 🏛️ Product 3: Cultural & Legal AI Assistant
+* **Nuance Detection:** A locally-hosted LLM (`qwen2.5:7b` via Ollama) combined with optional Gemini 2.0 Flash integration. 
+* **Heritage-Sensitive Analysis:** Interprets localized land laws (e.g., Philippines RA 7042, Thailand Land Code) and highlights cultural risks (indigenous domains, heritage districts). 
+* **RAG-lite Grounding:** Injects live market data from Products 1 & 2 directly into the AI's prompt for purely data-backed legal and cultural guidance.
+
+### 🧪 Product 4: Dynamic Data Lab (AutoML)
+* **Automated Curation:** Upload raw CSV datasets for new markets. The system uses AI to auto-detect schema, headers, and the target variable.
+* **Model Management:** Automatically trains a bespoke LightGBM model (80/20 split), evaluates RMSE and R², and allows users to download the trained weights or execute batch inference.
 
 ---
 
-## 🚦 How to Run the Demo
-1.  Ensure you have Python 3.9+ installed.
-2.  Install dependencies: `pip install flask pandas numpy lightgbm xgboost scikit-learn`
-3.  Launch the unified dashboard:
-    ```bash
-    ./launch_demo.sh
-    ```
-4.  Open your browser to: **`http://localhost:8000`**
+## 🛠️ 3. Technology Stack
+
+**Frontend Framework**
+* **Next.js 14+ (App Router):** High-performance React framework.
+* **TypeScript & Tailwind CSS:** Strict typing and an authoritative `asean.org`-inspired aesthetic (Deep Navy, Action Red, strict grid layouts).
+
+**Backend Engines**
+* **Python 3.9+ (Flask):** Three distinct microservices (Ports `5001`, `5002`, `5003`) handling the heavy lifting.
+* **Data Science:** `pandas`, `numpy`, `lightgbm`, `scikit-learn`.
+* **AI/LLM:** Local `Ollama` hosting `qwen2.5:7b`, with fallback to Google `Gemini`.
 
 ---
 
-## 📂 Documentation & Audits
-Detailed technical documentation can be found in the [`/docs`](./docs) folder:
-*   [**Investment Scanner User Guide**](./docs/investment_scanner_guide.md): Plain English explanation of the scanner metrics.
-*   [**Data Authenticity Audit**](./docs/data_authenticity_audit.md): Traceability report linking dashboard values back to raw CSV listings.
+## 🚦 4. How to Run the Platform Locally
+
+To experience the Ultimate Byteme analytical dashboard, you must run both the Python backend services and the Next.js frontend.
+
+### Prerequisites
+* Python 3.9+
+* Node.js v18+ & npm
+* [Ollama](https://ollama.com/) installed and running locally with the `qwen2.5:7b` model pulled (`ollama run qwen2.5:7b`).
+
+### Step 1: Boot the Python AI Microservices
+The backend consists of three Flask APIs that need to run concurrently.
+
+1. Open a terminal in the root `Datathon_Project-Properties-Dataset-` directory.
+2. Install pip dependencies:
+   ```bash
+   pip install flask pandas numpy lightgbm xgboost scikit-learn requests python-dotenv
+   ```
+3. Run the master boot script to launch all three products:
+   ```bash
+   bash launch_demo.sh
+   ```
+   *(This launches Product 1 on :5001, Product 2 on :5002, and Product 3 on :5003)*
+
+### Step 2: Boot the Next.js Frontend Dashboard
+1. Open a second terminal and navigate to the new frontend web directory:
+   ```bash
+   cd frontend-web
+   ```
+2. Install Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Next.js development server:
+   ```bash
+   npm run dev
+   ```
+
+### Step 3: Access the Platform
+* Open your browser and navigate to: **[http://localhost:3000](http://localhost:3000)**
+* Click "Launch System" to enter the main intelligence dashboard.
 
 ---
-**Developed for the 2026 Pan-Asian Datathon & Research Conference.** 🌏📈💎
+
+## 📂 5. Project Structure Overview
+```text
+├── Product_1_Global_Market_Intelligence/ # Valuation Engine API (:5001)
+├── Product_2_Investment_Opportunity_Scanner/# MEI & Yield API (:5002)
+├── Product_3_Cultural_AI_Assistant/      # Ollama/Gemini Chat API (:5003)
+├── frontend-web/                         # Next.js/Tailwind UI App (:3000)
+├── docs/                                 # Research Papers & Technical Specs
+│   └── SYNERGIA_2026_Research_Paper.md   # Core algorithmic methodology
+├── datasets/                             # Cleaned market CSVs
+└── launch_demo.sh                        # Bash script to boot backends
+```
+
+---
+*Elevating Southeast Asian real estate through computational ground truth.* 🌏📈💎
