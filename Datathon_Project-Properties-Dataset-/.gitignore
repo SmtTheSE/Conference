@@ -1,9 +1,9 @@
 # Data files (too large for Git)
-*.csv
+# *.csv
 !*.csv # Except those tracked by Git LFS
 
 # Large data files
-*.json
+# *.json
 !*.json # Except those tracked by Git LFS
 
 # Python cache files
@@ -66,3 +66,4 @@ output/
 data/
 dataset/
 datasets/10 Million House Rent Data of 40 cities/
+scratch/
