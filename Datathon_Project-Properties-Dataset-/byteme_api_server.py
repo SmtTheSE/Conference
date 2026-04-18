@@ -95,6 +95,30 @@ CULTURAL_FACTORS = {
         'net_cultural_adj': 0.03
     },
 
+    'san fernando city': {
+        'label': 'San Fernando City',
+        'province': 'La Union',
+        'sentiment_score': 65,
+        'sentiment_trend': 'Stable — urban center demand baseline',
+        'net_cultural_adj': 0.02
+    },
+    'agoo - inland': {
+        'label': 'Agoo — Inland Cluster',
+        'province': 'La Union',
+        'sentiment_score': 54,
+        'sentiment_trend': 'Emerging — infrastructure connectivity benefits',
+        'opportunity_flag': True,
+        'opportunity_note': 'Inland cluster: 15-22% below current fair value.',
+        'net_cultural_adj': 0.03
+    },
+    'tubao': {
+        'label': 'Tubao',
+        'province': 'La Union',
+        'sentiment_score': 48,
+        'sentiment_trend': 'Stable — rural residential expansion',
+        'net_cultural_adj': 0.01
+    },
+
     # Iloilo
     'iloilo business park - megaworld': {
         'label': 'Iloilo Business Park (Megaworld)',
@@ -135,6 +159,20 @@ CULTURAL_FACTORS = {
         ],
         'net_cultural_adj': 0.08
     },
+    'diversion road corridor': {
+        'label': 'Diversion Road Corridor',
+        'province': 'Iloilo',
+        'sentiment_score': 74,
+        'sentiment_trend': 'High Velocity — active mixed-use development',
+        'net_cultural_adj': 0.07
+    },
+    'la paz - mixed use': {
+        'label': 'La Paz — Mixed Use',
+        'province': 'Iloilo',
+        'sentiment_score': 59,
+        'sentiment_trend': 'Stable — urban renewal zone',
+        'net_cultural_adj': 0.02
+    },
     'molo - heritage district': {
         'label': 'Molo Heritage District',
         'province': 'Iloilo',
@@ -146,6 +184,20 @@ CULTURAL_FACTORS = {
             {'factor': 'Historic Cultural Heritage Premium', 'pct': 10, 'direction': 'positive'}
         ],
         'net_cultural_adj': 0.05
+    },
+    'pavia - outskirts': {
+        'label': 'Pavia — Outskirts',
+        'province': 'Iloilo',
+        'sentiment_score': 52,
+        'sentiment_trend': 'Growing — residential expansion corridor',
+        'net_cultural_adj': 0.01
+    },
+    'leganes - industrial fringe': {
+        'label': 'Leganes — Industrial Fringe',
+        'province': 'Iloilo',
+        'sentiment_score': 45,
+        'sentiment_trend': 'Stable',
+        'net_cultural_adj': 0.01
     }
 }
 
