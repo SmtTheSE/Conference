@@ -1,0 +1,42 @@
+#!/bin/bash
+echo "🚀 Launching Pan-Asian Real Estate Intelligence Demo..."
+
+# Kill any existing processes on these ports
+echo "Cleaning up ports..."
+lsof -ti:5001,5002,5003,8000 | xargs kill -9 2>/dev/null
+
+# --- API KEY SETUP ---
+# NEVER hardcode your API key here! Load it safely from a local .env file.
+# Create a file called .env in this directory with: GEMINI_API_KEY=your_key_here
+# That file is already listed in .gitignore so it will NEVER be pushed to GitHub.
+if [ -f ".env" ]; then
+    export $(grep -v '^#' .env | xargs)
+    echo "✅ Loaded API key from .env file"
+elif [ -z "$GEMINI_API_KEY" ]; then
+    echo "⚠️  WARNING: GEMINI_API_KEY is not set."
+    echo "   Create a .env file with: GEMINI_API_KEY=your_key_here"
+    echo "   Or run: export GEMINI_API_KEY=your_key_here before launching."
+fi
+
+# Start Backend APIs
+echo "Starting Product 1 (Global Market Intelligence)..."
+PORT=5001 python3 Product_1_Global_Market_Intelligence/api_server.py > /tmp/p1.log 2>&1 &
+
+echo "Starting Product 2 (Investment Scanner)..."
+PORT=5002 python3 Product_2_Investment_Opportunity_Scanner/api_server.py > /tmp/p2.log 2>&1 &
+
+echo "Starting Product 3 (Cultural Assistant)..."
+PORT=5003 python3 Product_3_Cultural_AI_Assistant/chatbot_server.py > /tmp/p3.log 2>&1 &
+
+echo "Starting ByteMe PH Valuation Engine (Core Demo)..."
+PORT=5004 python3 byteme_api_server.py > /tmp/byteme.log 2>&1 &
+
+echo "✅ Backend Services Online!"
+echo "---------------------------------------------------"
+echo "API Ports: 5001, 5002, 5003, 5004 (ByteMe)"
+echo "---------------------------------------------------"
+echo "Press Ctrl+C to stop all services."
+
+# Keep script running to maintain background processes
+trap "kill 0" EXIT
+wait

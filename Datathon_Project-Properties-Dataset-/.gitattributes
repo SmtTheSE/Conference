@@ -1,0 +1,8 @@
+*.csv filter=lfs diff=lfs merge=lfs -text
+output/*.csv filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
+visualizations/*.png filter=lfs diff=lfs merge=lfs -text
+visualizations/*.html filter=lfs diff=lfs merge=lfs -text
+visualizations/*.py filter=lfs diff=lfs merge=lfs -text
+visualizations/*.md filter=lfs diff=lfs merge=lfs -text
+visualizations/*.txt filter=lfs diff=lfs merge=lfs -text

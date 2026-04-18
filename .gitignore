@@ -1,0 +1,27 @@
+# Node
+node_modules/
+.next/
+dist/
+build/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Large Datasets (Optional exclusion if you want to keep repo small)
+# datasets/*.csv
+
+# System
+.DS_Store
+Thumbs.db
+
+# Large Binary
+*.bin
+*.txt.bak

@@ -1,0 +1,36 @@
+# SYNERGIA 2026: ByteMe Intelligence Testing Suite
+# Target Models: Product 1 (Global Intel), Product 2 (Scanner), Product 3 (Cultural AI)
+
+────────────────────────────────────────────────────────────────────────
+CATEGORY 1: CROSS-BORDER VALUATION & ARBITRAGE (Product 1)
+────────────────────────────────────────────────────────────────────────
+1. "Benchmark a 50sqm 1-bedroom condo in District 1, Ho Chi Minh City vs. Sukhumvit, Bangkok. Why is the Intl Eqv significantly higher in Saigon despite similar local demand?"
+2. "Value a 120sqm house in Ladprao, Thailand. What happens to the estimated gross rent if I increase the bathroom count from 1 to 3?"
+3. "Predict the fair market value of an 80sqm condo in Kuala Lumpur, Malaysia. How does it compare to a similar asset in Makati, Philippines in terms of total price delta?"
+4. "What is the BTC/ETH pricing equivalent for a luxury villa in Phuket? Does the model account for the recent crypto-real estate liquidity trend in Thailand?"
+
+────────────────────────────────────────────────────────────────────────
+CATEGORY 2: LEGAL & CULTURAL NUANCE (Product 3 / Cultural AI)
+────────────────────────────────────────────────────────────────────────
+5. "Can a foreign investor own land in San Juan, La Union? Explain the restrictions under the Foreign Investments Act (RA 7042)."
+6. "Explain the 'Ancestral Domain' risk in the Philippines highland investment. How does IPRA (RA 8371) affect foreign leasehold stability?"
+7. "Why is there a premium on north-facing units near BTS stations in Bangkok? How does the ByteMe model quantify this cultural preference?"
+8. "If I buy a condo in Vietnam, what is the maximum lease term allowed for foreigners under the 2013 Land Law? Is it renewable?"
+9. "What are the MM2H program requirements for property investment in Malaysia as of 2026?"
+
+────────────────────────────────────────────────────────────────────────
+CATEGORY 3: MARKET EFFICIENCY & MEI GAPS (Product 2 / Scanner)
+────────────────────────────────────────────────────────────────────────
+10. "Find me the top 3 'High-MEI' divergence zones in the Philippines. Why does community interest outpace listing prices in Iloilo City?"
+11. "Explain the 'Proxy Yield Modeling' used for the Philippines. How does it leverage 50,000+ Vietnam records to calculate yields in Iloilo?"
+12. "Identify the 'Hidden Gem' district in Malaysia currently showing an emerging yield curve above 6.0%."
+13. "Scan for properties in secondary Philippine cities with an 'Alpha Potential' score above 80/100."
+
+────────────────────────────────────────────────────────────────────────
+CATEGORY 4: STRESS TESTING & EDGE CASES
+────────────────────────────────────────────────────────────────────────
+14. "What happens to the valuation of a condo in Manila if the flood flag is active? Does the model reflect the historical price correction in flood zones?"
+15. "Can I own 100% of a Thai project if it is structured as a condominium? Explain the 49% ownership cap."
+16. "Compare an underdeveloped rural lot in Palawan vs. a high-density apartment in Hanoi. (Tests diversity of the data loader)."
+────────────────────────────────────────────────────────────────────────
+© 2026 ByteMe | Synergia International Conference

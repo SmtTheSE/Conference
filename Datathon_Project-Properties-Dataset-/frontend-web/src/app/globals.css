@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-asean-navy: #004a80;
+  --color-asean-navy-light: #006bb8;
+  --color-asean-navy-dark: #002d4d;
+
+  --color-asean-red: #ee3124;
+  --color-asean-red-light: #ff5246;
+  --color-asean-red-dark: #c11f14;
+
+  --color-asean-yellow: #f8a41a;
+
+  --color-background-offwhite: #f4f4f4;
+  --color-text-main: #2b2b2b;
+  --color-text-muted: #666666;
+  --color-border-light: #e5e7eb;
+
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: var(--color-text-main);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+/* Base Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-asean-navy);
+}
+
+/* Container resets */
+.container-asean {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Animations */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
