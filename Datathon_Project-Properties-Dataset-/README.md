@@ -1,111 +1,118 @@
-# 🌏 Ultimate Byteme: Pan-Asian Real Estate Intelligence
-**A Computational Intelligence Web-based Solution for Bridging Information Asymmetry in Emerging Real Estate Markets.**
+# Ultimate Byteme: Pan-Asian Real Estate Intelligence
+**A Computational Intelligence Platform for Addressing Information Asymmetry in Emerging Real Estate Markets.**
 
-*Developed for the 1st Synergia International Conference 2026.*  
-**Theme:** "Weaving Ideas, Celebrating Cultures, Shaping the Future"
-
----
-
-## 📖 1. Research Purpose & Context
-Information asymmetry in emerging Southeast Asian real estate markets (notably the Philippines, Thailand, Vietnam, and Malaysia) creates significant barriers to equitable investment and sustainable growth. Fragmentation in rental records and private transaction data often obscures true market value and fair-yield potential.
-
-**Ultimate Byteme** is a multi-layered computational intelligence platform designed to bridge these informational gaps. By integrating a state-of-the-art LightGBM framework with proprietary Proxy Yield Modeling and localized Large Language Models (LLMs), the system establishes a computational ground truth. It democratizes institutional-grade intelligence for local stakeholders, fosters long-term economic stability, reduces speculative inflation, and promotes a transparent investment ecosystem tailored specifically to the Southeast Asian cultural context.
+Developed for the Synergia International Conference 2026.
+Theme: "Weaving Ideas, Celebrating Cultures, Shaping the Future"
 
 ---
 
-## 🚀 2. Core Architecture & Products
+## 1. Research Overview
+Information asymmetry in Southeast Asian real estate markets creates significant barriers to equitable investment and sustainable growth. Fragmentation in rental records and private transaction data often obscures true market value and fair-yield potential.
 
-The platform is architected around four synergistic AI modules unified under a modern Next.js dashboard featuring a clean, authoritative ASEAN-inspired design language.
-
-### 📊 Product 1: Global Market Intelligence (Valuation Engine)
-* **Predictive Pricing:** Estimates fair market value based on physical attributes (Area, Bedrooms, Bathrooms, Type) and geographic location using LightGBM.
-* **Cross-Border Rent Estimates:** Provides rental income projections for any city in the supported regions.
-* **Benchmark Comparisons:** Compares Price-Per-Square-Meter against national and regional averages.
-
-### 💎 Product 2: Investment Opportunity Scanner
-* **Proxy Yield Modeling:** The standout technical innovation. Handles "Data-Sparse Markets" like the Philippines by using *Transfer Learning*. The model learns the yield curve from 50,000+ matched listings in Vietnam, applying it as a financial proxy to accurately estimate returns in other nations.
-* **Market Efficiency Index (MEI):** Scans for "Value Gaps" to identify undervalued hidden gems. 
-  * `MEI = (Search Volume Index + Interest Density) / Median Price Per Sqm`
-  * Instead of just finding "cheap" land, MEI flags zones where localized demand is rapidly outpacing current listing prices (e.g., La Union, Iloilo).
-
-### 🏛️ Product 3: Cultural & Legal AI Assistant
-* **Nuance Detection:** A locally-hosted LLM (`qwen2.5:7b` via Ollama) combined with optional Gemini 2.0 Flash integration. 
-* **Heritage-Sensitive Analysis:** Interprets localized land laws (e.g., Philippines RA 7042, Thailand Land Code) and highlights cultural risks (indigenous domains, heritage districts). 
-* **RAG-lite Grounding:** Injects live market data from Products 1 & 2 directly into the AI's prompt for purely data-backed legal and cultural guidance.
-
-### 🧪 Product 4: Dynamic Data Lab (AutoML)
-* **Automated Curation:** Upload raw CSV datasets for new markets. The system uses AI to auto-detect schema, headers, and the target variable.
-* **Model Management:** Automatically trains a bespoke LightGBM model (80/20 split), evaluates RMSE and R², and allows users to download the trained weights or execute batch inference.
+Ultimate Byteme is a multi-layered computational intelligence platform designed to bridge these informational gaps. By integrating a LightGBM framework with Proxy Yield Modeling and localized Large Language Models (LLMs), the system establishes a computational ground truth. It democratizes institutional-grade intelligence for local stakeholders and promotes a transparent investment ecosystem tailored to the Southeast Asian cultural context.
 
 ---
 
-## 🛠️ 3. Technology Stack
+## 2. Core Modules and Services
 
-**Frontend Framework**
-* **Next.js 14+ (App Router):** High-performance React framework.
-* **TypeScript & Tailwind CSS:** Strict typing and an authoritative `asean.org`-inspired aesthetic (Deep Navy, Action Red, strict grid layouts).
+### Product 1: Global Market Intelligence (Valuation Engine)
+* **Predictive Pricing:** Estimates fair market value based on physical attributes using LightGBM.
+* **Cross-Border Comparisons:** Compares property values across HCMC, Bangkok, Kuala Lumpur, and Manila.
 
-**Backend Engines**
-* **Python 3.9+ (Flask):** Three distinct microservices (Ports `5001`, `5002`, `5003`) handling the heavy lifting.
-* **Data Science:** `pandas`, `numpy`, `lightgbm`, `scikit-learn`.
-* **AI/LLM:** Local `Ollama` hosting `qwen2.5:7b`, with fallback to Google `Gemini`.
+### Product 2: Investment Opportunity Scanner
+* **Proxy Yield Modeling:** Uses Transfer Learning to apply yield curves from data-rich regions (e.g., Vietnam) to data-sparse markets (e.g., Philippines).
+* **Market Efficiency Index (MEI):** Identifies "Value Gaps" where localized demand outpaces listing prices.
 
----
+### Product 3: Cultural & Legal AI Assistant
+* **Nuance Detection:** Locally-hosted LLM (Qwen 2.5) provides heritage-sensitive analysis of land laws and cultural risks.
 
-## 🚦 4. How to Run the Platform Locally
-
-To experience the Ultimate Byteme analytical dashboard, you must run both the Python backend services and the Next.js frontend.
-
-### Prerequisites
-* Python 3.9+
-* Node.js v18+ & npm
-* [Ollama](https://ollama.com/) installed and running locally with the `qwen2.5:7b` model pulled (`ollama run qwen2.5:7b`).
-
-### Step 1: Boot the Python AI Microservices
-The backend consists of three Flask APIs that need to run concurrently.
-
-1. Open a terminal in the root `Datathon_Project-Properties-Dataset-` directory.
-2. Install pip dependencies:
-   ```bash
-   pip install flask pandas numpy lightgbm xgboost scikit-learn requests python-dotenv
-   ```
-3. Run the master boot script to launch all three products:
-   ```bash
-   bash launch_demo.sh
-   ```
-   *(This launches Product 1 on :5001, Product 2 on :5002, and Product 3 on :5003)*
-
-### Step 2: Boot the Next.js Frontend Dashboard
-1. Open a second terminal and navigate to the new frontend web directory:
-   ```bash
-   cd frontend-web
-   ```
-2. Install Node dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-
-### Step 3: Access the Platform
-* Open your browser and navigate to: **[http://localhost:3000](http://localhost:3000)**
-* Click "Launch System" to enter the main intelligence dashboard.
+### ByteMe PH Valuator (Quality Remediation Layer)
+* **Dual-Track Metrics:** Displays live computed Demo MAE alongside JLL 2025 Research benchmarks.
+* **Feature Importance:** Visualizes the impact of the Cultural Intelligence layer on property valuation.
 
 ---
 
-## 📂 5. Project Structure Overview
-```text
-├── Product_1_Global_Market_Intelligence/ # Valuation Engine API (:5001)
-├── Product_2_Investment_Opportunity_Scanner/# MEI & Yield API (:5002)
-├── Product_3_Cultural_AI_Assistant/      # Ollama/Gemini Chat API (:5003)
-├── frontend-web/                         # Next.js/Tailwind UI App (:3000)
-├── docs/                                 # Research Papers & Technical Specs
-│   └── SYNERGIA_2026_Research_Paper.md   # Core algorithmic methodology
-├── datasets/                             # Cleaned market CSVs
-└── launch_demo.sh                        # Bash script to boot backends
+## 3. Data Synchronization (Git LFS)
+
+This project utilizes Git Large File Storage (LFS) to manage large CSV datasets and trained model binaries. To ensure the application is fully functional, these files must be retrieved correctly.
+
+### Installation
+Ensure Git LFS is installed on your local machine:
+```bash
+# For macOS using Homebrew
+brew install git-lfs
+
+# For Linux (Debian/Ubuntu)
+sudo apt-get install git-lfs
+```
+
+### Initialization and Retrieval
+Run the following commands within the repository root to initialize LFS and pull the required assets:
+```bash
+git lfs install
+git lfs pull
 ```
 
 ---
-*Elevating Southeast Asian real estate through computational ground truth.* 🌏📈💎
+
+## 4. Technical Stack
+
+* **Frontend**: Next.js 15+, TypeScript, Tailwind CSS, Framer Motion.
+* **Backend**: Python 3.9+, Flask, LightGBM, XGBoost, Scikit-Learn.
+* **Intelligence**: Ollama (Qwen 2.5), Google Gemini 2.0 Flash (Optional).
+
+---
+
+## 5. Deployment Guide: Fully Loaded Startup
+
+To operate the full intelligence suite, follow this sequence to initialize all backend clusters and the frontend dashboard.
+
+### Phase 1: Environment Setup
+Initialize a Python virtual environment and install the required service dependencies:
+```bash
+# Navigate to the project root
+pip install flask pandas numpy lightgbm xgboost scikit-learn requests python-dotenv
+```
+
+### Phase 2: Launch Backend Microservices
+The backend architecture consists of four distinct service clusters. Use the provided master script or launch them manually:
+
+**Master Script Execution:**
+```bash
+bash launch_demo.sh
+```
+
+**Individual Service Ports:**
+* **Product 1 (Valuation):** Port 5001
+* **Product 2 (Scanner):** Port 5002
+* **Product 3 (Cultural AI):** Port 5003
+* **ByteMe PH Valuator:** Port 5004 (`python byteme_api_server.py`)
+
+### Phase 3: Launch Frontend Dashboard
+Navigate to the web directory and start the Next.js development server:
+```bash
+cd frontend-web
+npm install
+npm run dev -- -p 3001
+```
+
+### Phase 4: Access and Interaction
+The platform is accessible at **http://localhost:3001**.
+* Ensure **Ollama** is running locally with the `qwen2.5:7b` model for Product 3.
+* The system will automatically perform cold-start model training on the CSV datasets retrieved via Git LFS in the previous step.
+
+---
+
+## 6. Project structure
+```text
+├── Product_1_Global_Market_Intelligence/ # Valuation Engine Cluster
+├── Product_2_Investment_Opportunity_Scanner/# Yield & MEI Analysis
+├── Product_3_Cultural_AI_Assistant/      # Cultural Intelligence API
+├── byteme_api_server.py                  # PH Valuator Remediation Engine
+├── datasets/                             # LFS-managed Market Datasets
+├── frontend-web/                         # Next.js Intelligence Dashboard
+└── launch_demo.sh                        # Service Orchestration Script
+```
+
+---
+*Computational Ground Truth for Emerging Markets.*
