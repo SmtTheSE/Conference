@@ -1,6 +1,6 @@
 {
   "La Union": {
-    "San Juan - Beach District": {
+    "san juan - beach district": {
       "sentiment_score": 78,
       "headlines": [
         "Digital Nomad influx driving 40% surge in Q3-2024 short-term listing language",
@@ -11,7 +11,7 @@
         "⚠ ByteMe Sentiment Signal: 40% increase in speculative listing language detected Q3-2024."
       ]
     },
-    "Bauang - Inland": {
+    "bauang - inland": {
       "sentiment_score": 52,
       "headlines": [
         "New bypass road project to increase connectivity for inland Bauang barangays",
@@ -21,7 +21,7 @@
     }
   },
   "Iloilo": {
-    "Iloilo Business Park - Megaworld": {
+    "iloilo business park - megaworld": {
       "sentiment_score": 82,
       "headlines": [
         "BPO demand in Iloilo Business Park leads to record low vacancy rates",
@@ -32,7 +32,7 @@
         "⚠ Sentiment Index: Overheated pricing signals detected. Megaworld IBP priced 31% above ByteMe fundamental value."
       ]
     },
-    "Jaro - Residential District": {
+    "jaro - residential": {
       "sentiment_score": 63,
       "headlines": [
         "Rapid gentrification in Jaro: Century-old properties being repurposed for commercial use",

@@ -1,65 +1,173 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-asean-navy: #004a80;
-  --color-asean-navy-light: #006bb8;
-  --color-asean-navy-dark: #002d4d;
+  /* ── Brand Colors ── */
+  --color-asean-red:        #CE1126;
+  --color-asean-red-dark:   #A50D1E;
+  --color-asean-navy:       #0F2A4A;
 
-  --color-asean-red: #ee3124;
-  --color-asean-red-light: #ff5246;
-  --color-asean-red-dark: #c11f14;
+  /* ── Surface Palette (Light / Research) ── */
+  --color-bg-primary:       #FFFFFF;
+  --color-bg-secondary:     #F5F6F8;
+  --color-bg-tertiary:      #EAECF0;
+  --color-surface:          #FFFFFF;
 
-  --color-asean-yellow: #f8a41a;
+  /* ── Text ── */
+  --color-text-primary:     #0A0A0A;
+  --color-text-secondary:   #4A5568;
+  --color-text-muted:       #718096;
+  --color-text-main:        #1A202C;
 
-  --color-background-offwhite: #f4f4f4;
-  --color-text-main: #2b2b2b;
-  --color-text-muted: #666666;
-  --color-border-light: #e5e7eb;
+  /* ── Borders ── */
+  --color-border:           #E2E8F0;
+  --color-border-light:     #EDF2F7;
+  --color-border-strong:    #CBD5E0;
 
-  --font-sans: var(--font-inter);
+  /* ── Accent ── */
+  --color-accent-blue:      #2563EB;
+  --color-status-green:     #059669;
+  --color-status-amber:     #D97706;
+
+  /* ── Legacy aliases (used in existing components) ── */
+  --color-asean-yellow:     #CE1126;
+  --color-background-offwhite: #F5F6F8;
+  --color-deep-bg:          #FFFFFF;
+  --color-teal:             #0369A1;
+  --color-gold:             #CE1126;
+
+  /* ── Typography ── */
+  --font-sans:   var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-mono:  ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: var(--color-text-main);
+  --background: #F5F6F8;
+  --foreground: #0A0A0A;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: #F5F6F8;
+  color: #0A0A0A;
+  font-family: var(--font-sans), system-ui, sans-serif;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Base Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* ── Headings ── */
+h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-asean-navy);
+  line-height: 1.25;
+  color: #0A0A0A;
+  font-style: normal;
 }
 
-/* Container resets */
-.container-asean {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2rem;
+/* ── Form elements on light background ── */
+input, select, textarea {
+  color-scheme: light;
 }
 
-/* Animations */
+/* ── Research-style card (SOTAAI pattern) ── */
+.research-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0;
+  padding: 2rem;
+}
+
+.research-card-sm {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0;
+  padding: 1.25rem;
+}
+
+/* ── Red accent top bar ── */
+.accent-top {
+  border-top: 3px solid #CE1126;
+}
+
+/* ── Section label (uppercase eyebrow) ── */
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #CE1126;
+}
+
+/* ── Metric value (monospace numbers) ── */
+.metric-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ── Tech label (small uppercase tag) ── */
+.tech-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #718096;
+  font-style: normal;
+}
+
+/* ── Legacy alias ── */
+.tech-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ── Glass card (mapped to flat white card for SOTAAI style) ── */
+.glass-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0;
+}
+
+/* ── Glow effects: neutral for research style ── */
+.red-glow  { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.gold-glow { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* ── Divider ── */
+.tech-divider {
+  height: 1px;
+  background: #E2E8F0;
+  margin: 1.5rem 0;
+}
+
+/* ── Status dots ── */
+.status-dot-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #059669;
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(5,150,105,0.4); }
+  70%  { box-shadow: 0 0 0 6px rgba(5,150,105,0); }
+  100% { box-shadow: 0 0 0 0 rgba(5,150,105,0); }
+}
+
+/* ── Fade-in ── */
 .fade-in-up {
   opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-out forwards;
+  transform: translateY(12px);
+  animation: fadeInUp 0.4s ease-out forwards;
 }
 
 @keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Container ── */
+.container-asean {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
