@@ -26,10 +26,10 @@ SIDEBAR_BG = "#F0EEE9"   # sidebar panel
 ACCENT_LT  = "#EAF1F8"   # pale accent tint
 
 BASE_URLS = {
-    "ph_valuator": "http://localhost:5004",
-    "global_intel": "http://localhost:5001",
-    "scanner":      "http://localhost:5002",
-    "assistant":    "http://localhost:5003",
+    "ph_valuator": os.getenv("BYTEME_PH_VALUATOR_URL", "http://localhost:5004"),
+    "global_intel": os.getenv("BYTEME_GLOBAL_INTEL_URL", "http://localhost:5001"),
+    "scanner":      os.getenv("BYTEME_SCANNER_URL",      "http://localhost:5002"),
+    "assistant":    os.getenv("BYTEME_ASSISTANT_URL",    "http://localhost:5003"),
 }
 
 SIG_COLORS = {
