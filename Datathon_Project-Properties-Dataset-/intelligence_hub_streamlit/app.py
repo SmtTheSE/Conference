@@ -7,6 +7,17 @@ import plotly.graph_objects as go
 from datetime import datetime
 import numpy as np
 import os
+import sys
+
+# Standalone mode support
+@st.cache_resource
+def get_standalone_service():
+    try:
+        from standalone_service import StandaloneService
+        return StandaloneService()
+    except Exception as e:
+        st.error(f"Failed to load standalone service: {e}")
+        return None
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -317,20 +328,34 @@ def divergence_gauge(score, lo=-50, hi=50):
 </div>"""
 
 def api_get(module, path, params=None, timeout=8):
+    # Try remote call first
     try:
         r = requests.get(f"{BASE_URLS[module]}{path}", params=params, timeout=timeout)
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        return {"_error": str(e)}
+        # Fallback to standalone service
+        service = get_standalone_service()
+        if service:
+            res = service.get(module, path, params)
+            if "_error" not in res:
+                return res
+        return {"_error": f"Remote failed ({e}) and Standalone unavailable."}
 
 def api_post(module, path, body=None, timeout=15):
+    # Try remote call first
     try:
         r = requests.post(f"{BASE_URLS[module]}{path}", json=body or {}, timeout=timeout)
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        return {"_error": str(e)}
+        # Fallback to standalone service
+        service = get_standalone_service()
+        if service:
+            res = service.post(module, path, body)
+            if "_error" not in res:
+                return res
+        return {"_error": f"Remote failed ({e}) and Standalone unavailable."}
 
 def api_delete(module, path, timeout=10):
     try:
@@ -400,7 +425,24 @@ def render_sidebar():
         )
 
         st.markdown(f'<hr style="border-color:{BORDER};margin:1rem 0;">', unsafe_allow_html=True)
-        st.markdown(f'<div class="dim" style="text-align:center;">Synergia 2026 &middot; ByteMe</div>', unsafe_allow_html=True)
+        # Service status indicator
+        is_standalone = True
+        try:
+            requests.get("http://localhost:5001/health", timeout=0.1)
+            is_standalone = False
+        except:
+            pass
+        
+        status_color = "#FFA500" if is_standalone else "#00FF00"
+        status_text = "STANDALONE MODE" if is_standalone else "REMOTE CONNECTED"
+        st.markdown(f"""
+        <div style="background:{ACCENT_LT};padding:0.5rem;border-radius:4px;text-align:center;border:1px solid {BORDER}">
+          <span style="height:8px;width:8px;background-color:{status_color};border-radius:50%;display:inline-block;margin-right:5px;"></span>
+          <span style="font-size:0.65rem;font-weight:700;color:{ACCENT};letter-spacing:0.05rem;">{status_text}</span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown(f'<div class="dim" style="text-align:center;margin-top:10px;">Synergia 2026 &middot; ByteMe</div>', unsafe_allow_html=True)
 
     return page
 
