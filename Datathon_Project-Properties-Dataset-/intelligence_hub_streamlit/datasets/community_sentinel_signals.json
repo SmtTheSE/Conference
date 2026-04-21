@@ -1,0 +1,46 @@
+{
+  "La Union": {
+    "san juan - beach district": {
+      "sentiment_score": 78,
+      "headlines": [
+        "Digital Nomad influx driving 40% surge in Q3-2024 short-term listing language",
+        "Coastal survey reports elevated storm surge risk for beachside structures",
+        "San Juan tourism board reports record April arrivals: 56,194 visitors"
+      ],
+      "alerts": [
+        "⚠ ByteMe Sentiment Signal: 40% increase in speculative listing language detected Q3-2024."
+      ]
+    },
+    "bauang - inland": {
+      "sentiment_score": 52,
+      "headlines": [
+        "New bypass road project to increase connectivity for inland Bauang barangays",
+        "Real estate interest shifting 3-5km inland due to beach overcrowding"
+      ],
+      "opportunity_note": "Inland cluster 3-5km from beach: 15-22% below fair value. Road construction creating access premium."
+    }
+  },
+  "Iloilo": {
+    "iloilo business park - megaworld": {
+      "sentiment_score": 82,
+      "headlines": [
+        "BPO demand in Iloilo Business Park leads to record low vacancy rates",
+        "Panay-Guimaras-Negros Bridge construction slated for 2026-2028: Long-term value catalyst",
+        "Investors warning: Megaworld IBP pricing at 31% premium above historical benchmarks"
+      ],
+      "alerts": [
+        "⚠ Sentiment Index: Overheated pricing signals detected. Megaworld IBP priced 31% above ByteMe fundamental value."
+      ]
+    },
+    "jaro - residential": {
+      "sentiment_score": 63,
+      "headlines": [
+        "Rapid gentrification in Jaro: Century-old properties being repurposed for commercial use",
+        "Community reports of informal flood risk in 3 barangays during monsoon season"
+      ],
+      "alerts": [
+        "⚠ ByteMe Community Sentinel: 12 informal flood risk reports detected. Not reflected in DENR official maps."
+      ]
+    }
+  }
+}
