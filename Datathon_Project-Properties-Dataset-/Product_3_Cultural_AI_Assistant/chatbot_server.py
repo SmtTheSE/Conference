@@ -315,14 +315,15 @@ Your role:
         Intelligent rule-based fallback when Gemini API is unavailable.
         Still references legal facts and market data.
         """
+        import re
         msg = message.lower()
 
         # Build a context prefix if we have live data
         ctx = ""
         if market_context:
-            ctx = f"\n\n📡 *Live market data available: {market_context[:200]}...*"
+            ctx = f"\n\n📡 *Live market data available:\n{market_context}*"
 
-        if any(k in msg for k in ['foreigner', 'foreign', 'own land', 'ownership']):
+        if any(k in msg for k in ['foreigner', 'foreign', 'own land', 'ownership', 'own 100%']):
             if 'philippine' in msg or 'ph' in msg:
                 return (
                     "Under the **Foreign Investments Act (RA 7042)**, foreigners cannot own land in the Philippines. "
@@ -353,6 +354,29 @@ Your role:
                 f"Foreign buyers should note the 40% condo ownership cap under RA 7042." + ctx
             )
 
+        if 'ancestral domain' in msg or 'ipra' in msg:
+            return (
+                "Under the **IPRA (RA 8371)**, ancestral domains of indigenous peoples are non-transferable. "
+                "No foreign or non-indigenous person can hold title or long-term secure leaseholds. "
+                "This is a major red flag for any investment in Philippine highland or tribal areas. "
+                "ByteMe flags these regions as high-risk, un-modelable zones." + ctx
+            )
+
+        if 'bts' in msg or 'bangkok' in msg or 'north-facing' in msg:
+            return (
+                "**Cultural Premium Detected:** In Bangkok, units near BTS stations (within 500m) and north-facing units "
+                "command a significant cultural premium due to Feng Shui principles and transit convenience. "
+                "The ByteMe model quantifies this through **Location Frequency Encoding**, capturing the 15-30% price premium "
+                "associated with the Sukhumvit luxury market." + ctx
+            )
+
+        if 'flood flag' in msg or 'manila' in msg:
+            return (
+                "When a **flood flag** is active in Manila, the ByteMe model applies a heavy discount coefficient to the base valuation. "
+                "Historical data reveals significant price corrections in informal flood zones that often go unmapped by official sources. "
+                "ByteMe's Sentiment-Aware Index scans community discussions (e.g., Facebook groups) to detect these risks early." + ctx
+            )
+
         if any(k in msg for k in ['invest', 'yield', 'roi', 'return']):
             return (
                 "ByteMe's Investment Opportunity Scanner uses **Proxy Yield Modeling** (LightGBM trained on Vietnam data) "
@@ -361,7 +385,7 @@ Your role:
                 "⚠️ Note: No API key is set. To get real-time Gemini-powered analysis, provide a `gemini_api_key` in your request." + ctx
             )
 
-        if any(k in msg for k in ['hello', 'hi', 'sawasdee', 'xin chao']):
+        if re.search(r'\b(hello|hi|hey|sawasdee|xin chao)\b', msg):
             return (
                 "Sawasdee krub / Xin chao / Kumusta! 🌏 I am ByteMe's Cultural AI Assistant — "
                 "your Pan-Asian real estate legal and investment guide for the Synergia 2026 Conference. "
