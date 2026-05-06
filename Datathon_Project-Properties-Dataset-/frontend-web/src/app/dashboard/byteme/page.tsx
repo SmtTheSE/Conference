@@ -463,171 +463,222 @@ function OpportunityZoneModal({ zone, onClose }: { zone: OpportunityZone; onClos
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(15,42,74,0.8)" }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
+      style={{ backgroundColor: "rgba(10,20,40,0.85)", backdropFilter: "blur(4px)" }}
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
-      <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-white shadow-2xl border border-[#E2E8F0]">
-        {/* Red accent top */}
-        <div className="h-1 bg-asean-red w-full" />
+      <div className="relative w-full max-w-4xl max-h-[94vh] flex flex-col bg-white shadow-2xl overflow-hidden"
+        style={{ border: `1px solid ${sig.color}30` }}>
 
-        {/* Modal Header */}
-        <div className="sticky top-0 z-10 bg-white px-8 py-5 flex items-start justify-between border-b border-[#E2E8F0]">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-[#F5F6F8] border border-[#E2E8F0]">
+        {/* Colored top bar */}
+        <div className="h-1 w-full flex-shrink-0" style={{ background: sig.color }} />
+
+        {/* ── HEADER ─────────────────────────────────────────────────────── */}
+        <div className="flex-shrink-0 px-6 py-4 flex items-center justify-between gap-4"
+          style={{ background: `${sig.color}08`, borderBottom: `1px solid ${sig.color}20` }}>
+          <div className="flex items-center gap-4 min-w-0">
+            {/* Signal dot badge */}
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center"
+              style={{ background: `${sig.color}15`, border: `1px solid ${sig.color}40` }}>
               <div className="w-3 h-3 rounded-full" style={{ background: sig.color }} />
             </div>
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <span
-                  className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide border"
-                  style={{ background: `${sig.color}12`, color: sig.color, borderColor: `${sig.color}40` }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: sig.dot }} />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest"
+                  style={{ background: `${sig.color}18`, color: sig.color, border: `1px solid ${sig.color}50` }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: sig.color }} />
                   {sig.label}
                 </span>
-                <span className="text-[11px] text-[#718096] font-medium">{zone.province}</span>
+                <span className="text-[11px] text-[#718096] font-medium tracking-wide">{zone.province}</span>
               </div>
-              <h2 className="text-xl font-bold text-[#0A0A0A]">{zone.name}</h2>
-              <p className="text-[11px] text-[#718096] mt-0.5">{zone.sqm} sqm · Zone ID: {zone.id}</p>
+              <h2 className="text-[18px] font-bold text-[#0A0A0A] leading-tight truncate">{zone.name}</h2>
+              <p className="text-[11px] text-[#718096] mt-0.5">{zone.sqm} sqm &nbsp;·&nbsp; Zone ID: <span className="font-mono">{zone.id}</span></p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center text-[#718096] hover:text-[#0A0A0A] hover:bg-[#F5F6F8] transition-colors border border-[#E2E8F0] flex-shrink-0"
-          >✕</button>
+
+          {/* Right: divergence badge + close */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="text-right hidden sm:block">
+              <p className="text-[10px] text-[#718096] uppercase tracking-wider font-semibold">Divergence</p>
+              <p className="text-[18px] font-bold metric-value leading-tight" style={{ color: gaugeColor }}>
+                {zone.divergenceScore > 0 ? "+" : ""}{zone.divergenceScore.toFixed(1)}%
+              </p>
+              <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: gaugeColor }}>{gaugeLabel}</p>
+            </div>
+            <button onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center text-[#718096] hover:text-[#0A0A0A] transition-colors flex-shrink-0"
+              style={{ border: "1px solid #E2E8F0" }}>
+              ✕
+            </button>
+          </div>
         </div>
 
-        <div className="px-8 py-6 space-y-5">
-          {/* Thesis */}
-          <div className="p-4 bg-[#F5F6F8] border-l-4 border-asean-red">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-asean-red mb-2">Investment Thesis</p>
-            <p className="text-[13px] text-[#0A0A0A] leading-relaxed">{zone.thesis}</p>
-          </div>
+        {/* ── SCROLLABLE BODY ─────────────────────────────────────────────── */}
+        <div className="flex-1 overflow-y-auto">
 
-          {/* Flags */}
-          {(zone.floodFlag || zone.overpricedFlag || zone.opportunityFlag) && (
-            <div className="space-y-2">
+          {/* ── ROW 1: Thesis + Flags ───────────────────────────────────── */}
+          <div className="px-6 pt-5 pb-4 grid grid-cols-1 sm:grid-cols-5 gap-4">
+            {/* Thesis */}
+            <div className="sm:col-span-3 p-4" style={{ background: "#F8F9FB", borderLeft: `3px solid ${sig.color}` }}>
+              <p className="text-[9px] font-bold uppercase tracking-widest mb-2" style={{ color: sig.color }}>Investment Thesis</p>
+              <p className="text-[13px] text-[#0A0A0A] leading-relaxed">{zone.thesis}</p>
+            </div>
+            {/* Flags */}
+            <div className="sm:col-span-2 flex flex-col gap-2">
               {zone.opportunityFlag && zone.opportunityNote && (
-                <div className="flex gap-3 p-3 bg-green-50 border border-green-200">
-                  <span className="text-green-600 font-bold flex-shrink-0">✓</span>
+                <div className="flex gap-2 p-3 bg-green-50 border border-green-200 flex-1">
+                  <span className="text-green-600 font-bold text-[14px] flex-shrink-0 leading-tight">✓</span>
                   <div>
-                    <p className="text-[10px] font-semibold text-green-700 uppercase tracking-wide mb-0.5">Undervalued Opportunity</p>
-                    <p className="text-[12px] text-green-700">{zone.opportunityNote}</p>
+                    <p className="text-[9px] font-bold text-green-700 uppercase tracking-widest mb-0.5">Undervalued Opportunity</p>
+                    <p className="text-[11px] text-green-700 leading-snug">{zone.opportunityNote}</p>
                   </div>
                 </div>
               )}
               {zone.overpricedFlag && zone.overpricedNote && (
-                <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200">
-                  <span className="text-amber-600 font-bold flex-shrink-0">⚠</span>
+                <div className="flex gap-2 p-3 bg-amber-50 border border-amber-200 flex-1">
+                  <span className="text-amber-600 font-bold text-[14px] flex-shrink-0 leading-tight">⚠</span>
                   <div>
-                    <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wide mb-0.5">Speculative Pricing</p>
-                    <p className="text-[12px] text-amber-700">{zone.overpricedNote}</p>
+                    <p className="text-[9px] font-bold text-amber-700 uppercase tracking-widest mb-0.5">Speculative Pricing</p>
+                    <p className="text-[11px] text-amber-700 leading-snug">{zone.overpricedNote}</p>
                   </div>
                 </div>
               )}
               {zone.floodFlag && zone.floodNote && (
-                <div className="flex gap-3 p-3 bg-red-50 border border-red-200">
-                  <span className="text-red-600 font-bold flex-shrink-0">⚠</span>
+                <div className="flex gap-2 p-3 bg-red-50 border border-red-200 flex-1">
+                  <span className="text-red-500 font-bold text-[14px] flex-shrink-0 leading-tight">⚠</span>
                   <div>
-                    <p className="text-[10px] font-semibold text-red-700 uppercase tracking-wide mb-0.5">Flood Risk</p>
-                    <p className="text-[12px] text-red-700">{zone.floodNote}</p>
+                    <p className="text-[9px] font-bold text-red-700 uppercase tracking-widest mb-0.5">Flood Risk</p>
+                    <p className="text-[11px] text-red-700 leading-snug">{zone.floodNote}</p>
                   </div>
                 </div>
               )}
+              {!zone.opportunityFlag && !zone.overpricedFlag && !zone.floodFlag && (
+                <div className="flex-1 flex items-center justify-center p-3 bg-[#F8F9FB] border border-[#E2E8F0]">
+                  <p className="text-[11px] text-[#9CA3AF] italic">No active risk flags</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
-          {/* Key Metrics Grid */}
-          <div>
-            <p className="text-[10px] font-semibold text-[#718096] uppercase tracking-wider mb-3">Key Valuation Metrics</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* ── ROW 2: 4 Key Metric Tiles ───────────────────────────────── */}
+          <div className="px-6 pb-4">
+            <p className="text-[9px] font-bold text-[#718096] uppercase tracking-widest mb-2">Key Valuation Metrics</p>
+            <div className="grid grid-cols-4 gap-3">
               {[
-                { label: "Gross Yield", value: `${zone.yieldPct}%`, accent: zone.yieldPct >= 7 ? "text-green-700" : zone.yieldPct >= 5.5 ? "text-amber-600" : "text-red-600" },
-                { label: "Price / sqm", value: fmt(zone.ppsm), accent: "text-[#2563EB]" },
-                { label: "Total Value", value: fmtK(zone.totalPriceMid), accent: "text-[#0A0A0A]" },
-                { label: "Monthly Rent", value: fmtK(zone.monthlyRent), accent: "text-green-700" },
+                { label: "Gross Yield", value: `${zone.yieldPct}%`, color: zone.yieldPct >= 7 ? "#059669" : zone.yieldPct >= 5.5 ? "#ca8a04" : "#dc2626", bg: zone.yieldPct >= 7 ? "#f0fdf4" : zone.yieldPct >= 5.5 ? "#fffbeb" : "#fef2f2" },
+                { label: "Price / sqm", value: fmt(zone.ppsm), color: "#2563EB", bg: "#EFF6FF" },
+                { label: "Total Value", value: fmtK(zone.totalPriceMid), color: "#0A0A0A", bg: "#F8F9FB" },
+                { label: "Monthly Rent", value: fmtK(zone.monthlyRent), color: "#059669", bg: "#f0fdf4" },
               ].map((m) => (
-                <div key={m.label} className="bg-[#F5F6F8] border border-[#E2E8F0] p-3 text-center">
-                  <div className={`text-[15px] font-bold metric-value ${m.accent}`}>{m.value}</div>
-                  <div className="text-[10px] text-[#718096] font-medium uppercase tracking-wide mt-0.5">{m.label}</div>
+                <div key={m.label} className="p-3 text-center border" style={{ background: m.bg, borderColor: `${m.color}20` }}>
+                  <div className="text-[18px] font-bold metric-value leading-tight" style={{ color: m.color }}>{m.value}</div>
+                  <div className="text-[9px] text-[#718096] font-semibold uppercase tracking-widest mt-1">{m.label}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Price Range */}
-          <div className="bg-[#F5F6F8] border border-[#E2E8F0] p-4">
-            <p className="text-[10px] font-semibold text-[#718096] uppercase tracking-wider mb-3">Price / sqm Confidence Interval</p>
-            <div className="flex items-center gap-3">
-              <span className="text-[12px] text-[#4A5568]">{fmt(zone.ppsmRange[0])}</span>
-              <div className="flex-1 relative h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-                <div className="absolute left-0 top-0 h-full rounded-full" style={{ background: sig.color, width: "100%", opacity: 0.2 }} />
-                <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow"
-                  style={{ left: "50%", transform: "translate(-50%,-50%)", background: sig.color }}
-                />
+          {/* ── ROW 3: Price CI + Divergence Gauge (side by side) ───────── */}
+          <div className="px-6 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Confidence Interval */}
+            <div className="p-4 border border-[#E2E8F0] bg-[#F8F9FB]">
+              <p className="text-[9px] font-bold text-[#718096] uppercase tracking-widest mb-4">Price / sqm Confidence Interval</p>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="text-right">
+                  <div className="text-[10px] text-[#9CA3AF] font-medium">Low</div>
+                  <div className="text-[13px] font-bold text-[#4A5568]">{fmt(zone.ppsmRange[0])}</div>
+                </div>
+                <div className="flex-1 relative">
+                  <div className="h-2.5 rounded-full" style={{ background: `linear-gradient(90deg, ${sig.color}30, ${sig.color}90, ${sig.color}30)` }} />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow-md"
+                    style={{ background: sig.color }} />
+                </div>
+                <div className="text-left">
+                  <div className="text-[10px] text-[#9CA3AF] font-medium">High</div>
+                  <div className="text-[13px] font-bold text-[#4A5568]">{fmt(zone.ppsmRange[1])}</div>
+                </div>
               </div>
-              <span className="text-[12px] text-[#4A5568]">{fmt(zone.ppsmRange[1])}</span>
+              <div className="text-center pt-1 border-t border-[#E2E8F0] mt-2">
+                <span className="text-[11px] text-[#718096]">Mid estimate&nbsp;</span>
+                <span className="text-[16px] font-bold metric-value" style={{ color: sig.color }}>{fmt(zone.ppsm)}</span>
+                <span className="text-[11px] text-[#718096]">&nbsp;/ sqm</span>
+              </div>
             </div>
-            <p className="text-center text-[13px] font-bold mt-2 metric-value" style={{ color: sig.color }}>{fmt(zone.ppsm)} / sqm</p>
+
+            {/* Divergence Gauge */}
+            <div className="p-4 border border-[#E2E8F0] bg-[#F8F9FB]">
+              <p className="text-[9px] font-bold text-[#718096] uppercase tracking-widest mb-4">Divergence vs Fundamental Value</p>
+              <div className="flex justify-between text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1.5">
+                <span>Undervalued</span><span>Fair</span><span>Overpriced</span>
+              </div>
+              <div className="relative h-3 rounded-full mb-3" style={{ background: "linear-gradient(90deg, #059669 0%, #D97706 50%, #CE1126 100%)" }}>
+                <div className="absolute w-5 h-5 rounded-full border-2 border-white shadow-md"
+                  style={{ left: `${gaugePos}%`, top: "50%", transform: "translate(-50%,-50%)", background: gaugeColor }} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-widest"
+                  style={{ background: gaugeColor }}>
+                  {gaugeLabel}
+                </span>
+                <span className="text-[18px] font-bold metric-value" style={{ color: gaugeColor }}>
+                  {zone.divergenceScore > 0 ? "+" : ""}{zone.divergenceScore.toFixed(1)}%
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Divergence Gauge */}
-          <div className="bg-[#F5F6F8] border border-[#E2E8F0] p-4">
-            <p className="text-[10px] font-semibold text-[#718096] uppercase tracking-wider mb-3">Divergence Score vs Fundamental Value</p>
-            <div className="flex justify-between text-[10px] text-[#718096] mb-2">
-              <span>Undervalued</span><span>Fair Value</span><span>Overpriced</span>
+          {/* ── ROW 4: Sentiment + Cultural Adj ─────────────────────────── */}
+          <div className="px-6 pb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Sentiment — wider */}
+            <div className="sm:col-span-2 p-4 border border-[#E2E8F0] bg-[#F8F9FB]">
+              <div className="flex justify-between items-start mb-3">
+                <p className="text-[9px] font-bold text-[#718096] uppercase tracking-widest">Community Sentiment Index</p>
+                <span className="text-[22px] font-bold metric-value leading-none" style={{ color: sentColor }}>{zone.sentimentScore}<span className="text-[12px] font-medium text-[#9CA3AF]">/100</span></span>
+              </div>
+              <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden mb-3">
+                <div className="h-full rounded-full transition-all" style={{ width: `${zone.sentimentScore}%`, background: `linear-gradient(90deg, ${sentColor}80, ${sentColor})` }} />
+              </div>
+              <p className="text-[11px] text-[#4A5568] leading-relaxed">{zone.sentimentTrend}</p>
             </div>
-            <div className="relative h-3 rounded-full" style={{ background: "linear-gradient(90deg, #059669, #D97706, #CE1126)" }}>
-              <div className="absolute w-4 h-4 rounded-full border-2 border-white shadow"
-                style={{ left: `${gaugePos}%`, top: "50%", transform: "translate(-50%,-50%)", background: gaugeColor }}
-              />
-            </div>
-            <div className="flex items-center justify-center gap-3 mt-3">
-              <span className="px-3 py-1 text-[11px] font-semibold text-white uppercase tracking-wide" style={{ background: gaugeColor }}>
-                {gaugeLabel}
-              </span>
-              <span className="text-[12px] text-[#4A5568]">
-                {zone.divergenceScore > 0 ? "+" : ""}{zone.divergenceScore.toFixed(1)}% vs fair value
-              </span>
+
+            {/* Net Cultural Adj */}
+            <div className="p-4 border border-[#E2E8F0] flex flex-col items-center justify-center text-center"
+              style={{ background: zone.culturalAdj > 0 ? "#f0fdf4" : zone.culturalAdj < 0 ? "#fef2f2" : "#F8F9FB", borderColor: zone.culturalAdj > 0 ? "#bbf7d0" : zone.culturalAdj < 0 ? "#fecaca" : "#E2E8F0" }}>
+              <p className="text-[9px] font-bold uppercase tracking-widest mb-2"
+                style={{ color: zone.culturalAdj > 0 ? "#059669" : zone.culturalAdj < 0 ? "#dc2626" : "#718096" }}>
+                Net Cultural Adjustment
+              </p>
+              <div className="text-[32px] font-bold metric-value leading-none"
+                style={{ color: zone.culturalAdj > 0 ? "#059669" : zone.culturalAdj < 0 ? "#CE1126" : "#718096" }}>
+                {zone.culturalAdj > 0 ? "+" : ""}{zone.culturalAdj}%
+              </div>
+              <p className="text-[10px] text-[#9CA3AF] mt-1">cultural layer net</p>
             </div>
           </div>
 
-          {/* Sentiment */}
-          <div className="bg-[#F5F6F8] border border-[#E2E8F0] p-4">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-[10px] font-semibold text-[#718096] uppercase tracking-wider">Community Sentiment Index</p>
-              <span className="text-[13px] font-bold metric-value" style={{ color: sentColor }}>{zone.sentimentScore}/100</span>
-            </div>
-            <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden mb-2">
-              <div className="h-full rounded-full" style={{ width: `${zone.sentimentScore}%`, background: sentColor }} />
-            </div>
-            <p className="text-[12px] text-[#4A5568] leading-relaxed">{zone.sentimentTrend}</p>
-          </div>
-
-          {/* Cultural Factors */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* ── ROW 5: Value Premiums + Risk Discounts ───────────────────── */}
+          <div className="px-6 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {zone.culturalPremiums.length > 0 && (
-              <div className="bg-green-50 border border-green-200 p-4">
-                <p className="text-[10px] font-semibold text-green-700 uppercase tracking-wider mb-3">Value Premiums</p>
+              <div className="p-4 bg-green-50 border border-green-200">
+                <p className="text-[9px] font-bold text-green-700 uppercase tracking-widest mb-3">Value Premiums</p>
                 <div className="space-y-2">
                   {zone.culturalPremiums.map((f, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span className="text-[12px] text-[#0A0A0A]">{f.factor}</span>
-                      <span className="text-[12px] font-bold text-green-700">+{f.pct}%</span>
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-green-100 last:border-0">
+                      <span className="text-[12px] text-[#374151]">{f.factor}</span>
+                      <span className="text-[13px] font-bold text-green-700 metric-value">+{f.pct}%</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
             {zone.culturalRisks.length > 0 && (
-              <div className="bg-red-50 border border-red-200 p-4">
-                <p className="text-[10px] font-semibold text-red-700 uppercase tracking-wider mb-3">Risk Discounts</p>
+              <div className="p-4 bg-red-50 border border-red-200">
+                <p className="text-[9px] font-bold text-red-700 uppercase tracking-widest mb-3">Risk Discounts</p>
                 <div className="space-y-2">
                   {zone.culturalRisks.map((f, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span className="text-[12px] text-[#0A0A0A]">{f.factor}</span>
-                      <span className="text-[12px] font-bold text-red-600">{f.pct}%</span>
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-red-100 last:border-0">
+                      <span className="text-[12px] text-[#374151]">{f.factor}</span>
+                      <span className="text-[13px] font-bold text-red-600 metric-value">{f.pct}%</span>
                     </div>
                   ))}
                 </div>
@@ -635,41 +686,40 @@ function OpportunityZoneModal({ zone, onClose }: { zone: OpportunityZone; onClos
             )}
           </div>
 
-          {/* Net Cultural Adj */}
-          <div className="flex items-center justify-between bg-[#F5F6F8] border border-[#E2E8F0] p-4">
-            <p className="text-[12px] font-semibold text-[#4A5568]">Net Cultural Adjustment</p>
-            <span className="text-[16px] font-bold metric-value" style={{ color: zone.culturalAdj > 0 ? "#059669" : zone.culturalAdj < 0 ? "#CE1126" : "#718096" }}>
-              {zone.culturalAdj > 0 ? "+" : ""}{zone.culturalAdj}%
-            </span>
-          </div>
-
-          {/* Cross-Border Benchmarks */}
-          <div className="bg-[#F5F6F8] border border-[#E2E8F0] p-4">
-            <p className="text-[10px] font-semibold text-[#718096] uppercase tracking-wider mb-3">Cross-Border Benchmarks</p>
-            <div className="divide-y divide-[#E2E8F0]">
-              {Object.entries(zone.crossBorder).map(([city, diff]) => (
-                <div key={city} className="flex justify-between items-center py-2">
-                  <span className="text-[12px] text-[#4A5568]">vs. {city}</span>
-                  <span className="text-[12px] font-bold" style={{ color: diff >= 0 ? "#CE1126" : "#059669" }}>
-                    {diff >= 0 ? "+" : ""}{diff.toFixed(1)}%
-                  </span>
-                </div>
-              ))}
+          {/* ── ROW 6: Cross-Border Benchmarks ──────────────────────────── */}
+          <div className="px-6 pb-4">
+            <p className="text-[9px] font-bold text-[#718096] uppercase tracking-widest mb-2">Cross-Border Benchmarks</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {Object.entries(zone.crossBorder).map(([city, diff]) => {
+                const isNeg = diff < 0;
+                return (
+                  <div key={city} className="p-3 border flex items-center justify-between"
+                    style={{ background: isNeg ? "#f0fdf4" : "#fef2f2", borderColor: isNeg ? "#bbf7d0" : "#fecaca" }}>
+                    <span className="text-[11px] text-[#4A5568] font-medium">vs. {city}</span>
+                    <span className="text-[14px] font-bold metric-value" style={{ color: isNeg ? "#059669" : "#CE1126" }}>
+                      {diff >= 0 ? "+" : ""}{diff.toFixed(1)}%
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Intelligence Notes */}
-          <div className="bg-blue-50 border border-blue-200 p-4">
-            <p className="text-[10px] font-semibold text-blue-700 uppercase tracking-wider mb-3">Intelligence Notes</p>
-            <div className="space-y-2">
-              {zone.intelligenceNotes.map((note, i) => (
-                <div key={i} className="flex gap-2">
-                  <span className="text-blue-500 font-bold flex-shrink-0">›</span>
-                  <p className="text-[12px] text-[#0A0A0A] leading-relaxed">{note}</p>
-                </div>
-              ))}
+          {/* ── ROW 7: Intelligence Notes ────────────────────────────────── */}
+          <div className="px-6 pb-6">
+            <div className="p-4 bg-[#EFF6FF] border border-[#BFDBFE]">
+              <p className="text-[9px] font-bold text-[#1D4ED8] uppercase tracking-widest mb-3">Intelligence Notes</p>
+              <div className="space-y-2">
+                {zone.intelligenceNotes.map((note, i) => (
+                  <div key={i} className="flex gap-2.5 items-start">
+                    <span className="text-[#3B82F6] font-bold flex-shrink-0 text-[13px] leading-tight mt-0.5">›</span>
+                    <p className="text-[12px] text-[#1E3A5F] leading-relaxed">{note}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -970,7 +1020,7 @@ export default function ByteMePage() {
               { label: "Validation MAE", value: m ? `±${m.demo_mae_pct?.toFixed(1)}%` : "—", note: "Synthetic test set" },
               { label: "Real-World MAE", value: m ? `±${m.research_mae_pct?.toFixed(1)}%` : "±3.8%", note: "JLL 2025 Audit" },
               { label: "FP Reduction", value: m ? `${m.false_positive_reduction_pct?.toFixed(0)}%` : "—", note: "Ablation study" },
-              { label: "vs Baseline", value: m ? `${m.vs_baseline_multiplier?.toFixed(1)}×` : "—", note: "vs XGBoost" },
+              { label: "vs Baseline", value: m ? `${m.vs_baseline_multiplier?.toFixed(2)}×` : "—", note: "vs XGBoost" },
             ];
             return metrics.map((item) => (
               <div key={item.label} className="px-6 py-5 text-center">

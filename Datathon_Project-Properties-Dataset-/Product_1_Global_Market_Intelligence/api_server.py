@@ -82,7 +82,7 @@ class GeminiAnalyst:
         4. "reasoning": 1 sentence explanation.
         """
         
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-flash-latest:generateContent?key={self.api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={self.api_key}"
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
         
         try:
@@ -383,9 +383,9 @@ Respond with ONLY a JSON object in this exact format:
 If you cannot determine the country, set confidence to 0.0."""
 
         try:
-            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-flash-latest:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             payload = {"contents": [{"parts": [{"text": prompt}]}]}
-            
+
             response = requests.post(url, json=payload, timeout=10)
             if response.status_code == 200:
                 ai_text = response.json()['candidates'][0]['content']['parts'][0]['text']
@@ -837,67 +837,100 @@ def train_custom_model():
         if missing_features:
             return jsonify({'error': f"Features not found: {missing_features}. Available: {df.columns.tolist()}"}), 400
             
-        # Basic Preprocessing (Auto-ML Style)
+        import re as _re
+
         # Drop missing target rows
         df = df.dropna(subset=[target])
-        
-        # Handle features - only use available ones
+
+        # Also try to parse the target itself if it's a string (e.g. "100 triệu/tháng")
+        if not pd.api.types.is_numeric_dtype(df[target]):
+            extracted_target = df[target].astype(str).str.extract(r'([\d]+(?:[.,]\d+)?)', expand=False)
+            extracted_target = extracted_target.str.replace(',', '.').astype(float)
+            if extracted_target.notna().sum() / max(len(df), 1) > 0.3:
+                df[target] = extracted_target
+                df = df.dropna(subset=[target])
+                print(f"Parsed target '{target}' from string to numeric.")
+            else:
+                return jsonify({'error': f"Target column '{target}' could not be converted to a number. Please choose a numeric column."}), 400
+
+        # Handle features — only use available ones
         available_features = [f for f in features if f in df.columns]
         if not available_features:
             return jsonify({'error': 'No valid features found'}), 400
-        
+
         print(f"Initial features: {available_features}")
-            
+
         X = df[available_features].copy()
         y = df[target]
-        
+
+        # ── Step 1: Extract numeric values from "number + unit" string columns ──
+        # e.g. "60 m²" → 60.0  |  "2 phòng ngủ" → 2.0  |  "100 triệu/tháng" → 100.0
+        for col in X.columns:
+            if not pd.api.types.is_numeric_dtype(X[col]):
+                extracted = X[col].astype(str).str.extract(r'([\d]+(?:[.,]\d+)?)', expand=False)
+                extracted = extracted.str.replace(',', '.').astype(float)
+                convert_ratio = extracted.notna().sum() / max(len(X), 1)
+                if convert_ratio > 0.5:
+                    X[col] = extracted
+                    print(f"Extracted numeric from '{col}' ({convert_ratio:.0%} success)")
+
         # Drop rows with missing feature values
         X = X.dropna()
         y = y[X.index]
-        
+
         if len(X) < 10:
             return jsonify({'error': f'Not enough data after cleaning. Only {len(X)} rows remain.'}), 400
-        
-        # Smart feature filtering: Remove high-cardinality text columns
-        # These cause massive one-hot encoding and slow training
+
+        # ── Step 2: Filter features — drop high-cardinality text columns ──
         filtered_features = []
         for col in X.columns:
-            # Always skip these problematic columns
             if col.lower() in ['url', 'link', 'listing_url', 'id', 'title', 'description', 'name']:
                 print(f"Skipping text column: {col}")
                 continue
-            
-            # Check data type
             if pd.api.types.is_numeric_dtype(X[col]):
-                # Keep all numeric columns
                 filtered_features.append(col)
                 continue
-            
-            # For categorical columns, check cardinality
             unique_count = X[col].nunique()
             unique_ratio = unique_count / len(X)
-            
-            # Keep if reasonable cardinality (< 100 unique values OR < 30% unique ratio)
             if unique_count < 100 or unique_ratio < 0.3:
                 filtered_features.append(col)
             else:
-                print(f"Skipping high-cardinality column: {col} ({unique_count} unique values, {unique_ratio:.1%} unique)")
-        
+                print(f"Skipping high-cardinality column: {col} ({unique_count} unique, {unique_ratio:.1%} ratio)")
+
         if not filtered_features:
             return jsonify({'error': 'No suitable features after filtering. Try selecting numeric columns or low-cardinality categorical columns.'}), 400
-        
+
         print(f"Filtered features for training: {filtered_features}")
         X = X[filtered_features]
-        
-        # Simple One-Hot Encoding for remaining categorical features (now safe)
+
+        # ── Step 3: One-hot encode remaining categorical columns ──
         X = pd.get_dummies(X, drop_first=True)
-        
-        # Sanitize column names for LightGBM (no special JSON characters)
+
+        # ── Step 4: Sanitize column names (unicode → ASCII) ──
         X.columns = X.columns.str.replace('[^A-Za-z0-9_]', '_', regex=True)
-        X.columns = X.columns.str.replace('__+', '_', regex=True)  # Remove multiple underscores
-        X.columns = X.columns.str.strip('_')  # Remove leading/trailing underscores
-        print(f"Sanitized column names: {X.columns.tolist()[:10]}...")  # Show first 10
-        
+        X.columns = X.columns.str.replace('__+', '_', regex=True)
+        X.columns = X.columns.str.strip('_')
+
+        # ── Step 5: Merge duplicate column names caused by unicode collapse ──
+        if X.columns.duplicated().any():
+            dupes = X.columns[X.columns.duplicated(keep=False)].unique().tolist()
+            print(f"Merging {len(dupes)} duplicate column name(s): {dupes[:5]}")
+            X = X.T.groupby(level=0).sum().T
+
+        # ── Step 6: Force all columns to numeric; drop any that still aren't ──
+        # (groupby sum on bool/object columns can produce object dtype in some pandas versions)
+        X = X.apply(pd.to_numeric, errors='coerce')
+        bad_cols = X.columns[X.dtypes == object].tolist()
+        if bad_cols:
+            print(f"Dropping {len(bad_cols)} non-numeric columns after encoding: {bad_cols[:5]}")
+            X = X.drop(columns=bad_cols)
+        X = X.fillna(0)
+
+        if X.shape[1] == 0:
+            return jsonify({'error': 'No numeric features remain after preprocessing. Please upload a dataset with numeric columns.'}), 400
+
+        print(f"Final feature count: {len(X.columns)} | sample names: {X.columns.tolist()[:10]}")
+
         # Train-Test Split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         

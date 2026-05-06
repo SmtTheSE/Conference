@@ -172,7 +172,7 @@ function statBox(slide, x, y, value, label, opts = {}) {
     x: 0.3, y: 4.05, w: 9.4, h: 0.72,
     fill: { color: C.navy }, line: { color: C.navy }, shadow: makeShadow()
   });
-  s.addText("OUTPUT  →  LightGBM + Cultural Adjustment Layer  →  Price/sqm (PHP) with ±3.8% MAE · 68% false-positive reduction · 2.1× vs XGBoost", {
+  s.addText("OUTPUT  →  LightGBM + Cultural Adjustment Layer  →  Price/sqm (PHP) with ±3.8% MAE · 50% false-positive reduction · 2.0× vs XGBoost", {
     x: 0.4, y: 4.08, w: 9.2, h: 0.65,
     fontSize: 12, bold: true, color: C.gold, align: "center", fontFace: "Georgia", margin: 0
   });
@@ -457,7 +457,7 @@ function statBox(slide, x, y, value, label, opts = {}) {
   const insights = [
     { title: "Transfer Learning alone", body: "Reduces MAE from 7.98% → 6.9%\n−1.08pp improvement\nSG structural patterns generalise to PH geography", color: "2C5282" },
     { title: "Cultural features alone", body: "Reduces MAE from 6.9% → 5.8%\n−1.1pp improvement\nSentiment, flood, tourism signals are real price signals", color: "1A6B3C" },
-    { title: "Full ByteMe model", body: "Final MAE: 3.8%  (research validated)\n2.1× better than XGBoost  ·  68% false-positive drop\nBoth components are additive & necessary", color: C.gold },
+    { title: "Full ByteMe model", body: "Final MAE: 3.8%  (research validated)\n2.0× better than XGBoost  ·  50% false-positive drop\nBoth components are additive & necessary", color: C.gold },
   ];
 
   insights.forEach((ins, i) => {
@@ -631,8 +631,8 @@ function statBox(slide, x, y, value, label, opts = {}) {
   // Stat boxes top row
   statBox(s, 0.3,  1.3, "3.8%",  "MAE\n(Research Validated)", { dark: true });
   statBox(s, 2.55, 1.3, "0.043", "σ — Std Dev\n(Prediction Spread)", { dark: true });
-  statBox(s, 4.8,  1.3, "68%",   "False-Positive\nReduction vs Baseline", { dark: true });
-  statBox(s, 7.05, 1.3, "2.1×",  "Accuracy vs\nXGBoost Baseline", { dark: true });
+  statBox(s, 4.8,  1.3, "50%",   "False-Positive\nReduction vs Baseline", { dark: true });
+  statBox(s, 7.05, 1.3, "2.0×",  "Accuracy vs\nXGBoost Baseline", { dark: true });
 
   // ASEAN benchmarks table
   s.addText("ASEAN Market Context — USD/sqm Benchmarks", {

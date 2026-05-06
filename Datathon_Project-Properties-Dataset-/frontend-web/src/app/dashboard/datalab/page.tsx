@@ -7,7 +7,7 @@ const API_PRODUCT1 = "http://localhost:5001";
 export default function DynamicDataLab() {
     // Train State
     const [csvFile, setCsvFile] = useState<File | null>(null);
-    const [apiKey, setApiKey] = useState("AIzaSyAnx2QJ9awa1pBjMVNwOXbWojqYrKsWjOw");
+    const [apiKey, setApiKey] = useState("AIzaSyB1Yo4Dtj--fTci-Jm2MXwNi6XPyR7U9ts");
     const [trainLoading, setTrainLoading] = useState(false);
     const [trainStatus, setTrainStatus] = useState("");
     const [trainResult, setTrainResult] = useState<any>(null);
@@ -33,7 +33,10 @@ export default function DynamicDataLab() {
             const formData = new FormData();
             formData.append("file", csvFile);
             const upRes = await fetch(`${API_PRODUCT1}/upload_dataset`, { method: "POST", body: formData });
-            if (!upRes.ok) throw new Error("Upload failed");
+            if (!upRes.ok) {
+                const e = await upRes.json().catch(() => ({}));
+                throw new Error(e.error || "Upload failed");
+            }
             const upData = await upRes.json();
             setCurrentUpload(upData);
 
@@ -45,12 +48,17 @@ export default function DynamicDataLab() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ dataset_id: upData.dataset_id, api_key: apiKey })
             });
-            if (!azRes.ok) throw new Error("Analysis failed");
+            if (!azRes.ok) {
+                const e = await azRes.json().catch(() => ({}));
+                throw new Error(e.error || "Analysis failed");
+            }
             const azData = await azRes.json();
 
-            if (azData.strategy?.error) throw new Error(`AI Error: ${azData.strategy.error}`);
+            if (azData.strategy?.error) throw new Error(`AI schema error: ${azData.strategy.error}`);
 
-            setTrainStatus(`Auto-training LightGBM model for target [${azData.strategy.target_variable}]...`);
+            const method = azData.strategy.method || "";
+            const methodLabel = method.includes("Gemini") ? "Gemini AI" : "Rule-Based Fallback";
+            setTrainStatus(`[${methodLabel}] Auto-training LightGBM model for target [${azData.strategy.target_variable}]...`);
 
             // 3. Train
             const trainRes = await fetch(`${API_PRODUCT1}/train_custom_model`, {
@@ -58,7 +66,10 @@ export default function DynamicDataLab() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ dataset_id: upData.dataset_id, strategy: azData.strategy })
             });
-            if (!trainRes.ok) throw new Error("Training failed");
+            if (!trainRes.ok) {
+                const e = await trainRes.json().catch(() => ({}));
+                throw new Error(e.error || "Training failed");
+            }
             const trainData = await trainRes.json();
 
             setTrainResult({ strategy: azData.strategy, metrics: trainData });

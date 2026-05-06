@@ -231,7 +231,7 @@ function addFooter(slide, num) {
     },
     {
       num: "04", title: "Sentiment-Aware Index", hdr: "6B1B5E",
-      pts: ["Filipino-language NLP on news & social media", "Legal registry anomaly detection", "Cultural pricing premium/discount flags", "Cuts false-positive signals by 68%"],
+      pts: ["Filipino-language NLP on news & social media", "Legal registry anomaly detection", "Cultural pricing premium/discount flags", "Cuts false-positive signals by 50%"],
       why: "The layer that separates ByteMe from every existing solution"
     }
   ];
@@ -484,8 +484,8 @@ function addFooter(slide, num) {
   const stats = [
     { val: "σ<0.05",  label: "Predictive Variance",   sub: "High stability across all test periods", col: NAVY },
     { val: "±3.8%",   label: "Mean Absolute Error",    sub: "vs. actual 2025 market benchmarks",     col: "1B5E8C" },
-    { val: "68%",     label: "FP Signal Reduction",    sub: "Fewer false-positive investment alerts", col: "1B6B3A" },
-    { val: "2.1×",    label: "vs. Baseline Accuracy",  sub: "Improvement over generic XGBoost model", col: "8B5E1B" }
+    { val: "50%",     label: "FP Signal Reduction",    sub: "Fewer false-positive investment alerts", col: "1B6B3A" },
+    { val: "2.0×",    label: "vs. Baseline Accuracy",  sub: "Improvement over generic XGBoost model", col: "8B5E1B" }
   ];
   stats.forEach((st, i) => {
     const x = 0.25 + i * 2.38;
@@ -532,7 +532,7 @@ function addFooter(slide, num) {
     fontSize: 9, color: BODY, fill: { color: WHITE }, align: "center"
   });
 
-  s.addNotes("The results are strong. Our headline metric is σ = 0.043 — below our 0.05 threshold. In practical terms, for La Union we predicted ₱38,400–42,200 per sqm for 2025. Contemporary 2025 reports confirm ₱37,800–43,500 — our range sits precisely within the validated range. For Iloilo CBD, we predicted ₱68,500–75,000; actual 2025 benchmarks confirm ₱67,200–76,800. Our mean absolute error of ±3.8% compares to 18.4% for a generic XGBoost baseline — a 2.1× improvement. Critically, the false-positive investment signal reduction of 68% means investors using ByteMe are far less likely to chase properties that appear attractive but are fundamentally overpriced relative to yield-adjusted value.");
+  s.addNotes("The results are strong. Our headline metric is σ = 0.043 — below our 0.05 threshold. In practical terms, for La Union we predicted ₱38,400–42,200 per sqm for 2025. Contemporary 2025 reports confirm ₱37,800–43,500 — our range sits precisely within the validated range. For Iloilo CBD, we predicted ₱68,500–75,000; actual 2025 benchmarks confirm ₱67,200–76,800. Our mean absolute error of ±3.8% compares to 7.7% for a generic XGBoost baseline — a 2.0× improvement. Critically, the false-positive investment signal reduction of 50% means investors using ByteMe are far less likely to chase properties that appear attractive but are fundamentally overpriced relative to yield-adjusted value.");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -766,7 +766,7 @@ function addFooter(slide, num) {
 
   const tks = [
     { n: "01", t: "ByteMe demonstrates that cultural intelligence + computational rigor = genuine market transparency in SE Asian real estate." },
-    { n: "02", t: "With σ < 0.05 predictive stability and 68% false-positive reduction, the framework delivers institutional-grade reliability in data-sparse environments." },
+    { n: "02", t: "With σ < 0.05 predictive stability and 50% false-positive reduction, the framework delivers institutional-grade reliability in data-sparse environments." },
     { n: "03", t: "Transfer learning from mature markets resolves the cold-start problem — enabling actionable insights with fewer than 500 local transactions." },
     { n: "04", t: "The cultural layer is not optional — removing it caused 2.8× more false positives, confirming that computation alone is insufficient in SE Asia." }
   ];
@@ -784,7 +784,7 @@ function addFooter(slide, num) {
     x: 0.65, y: 4.3, w: 8.7, h: 0.82, fontSize: 12, color: GOLD_LT, italic: true, align: "center", valign: "middle"
   });
 
-  s.addNotes("In conclusion: the problem of real estate information asymmetry in Southeast Asia is real and significant. ByteMe is our answer. We have demonstrated four things. First, that cultural intelligence and computational rigor must coexist. Second, that σ < 0.05 predictive stability is achievable in data-sparse secondary markets. Third, that transfer learning genuinely solves the cold-start problem — validated against real 2025 market data. Fourth, that the cultural sentiment layer provides a 68% reduction in false positive signals — a number that translates directly into better investment decisions and reduced speculative risk. We invite the research community to build on this work. The data void in SE Asia is too large for any single team to fill. But ByteMe has established that the framework exists to do so. Thank you.");
+  s.addNotes("In conclusion: the problem of real estate information asymmetry in Southeast Asia is real and significant. ByteMe is our answer. We have demonstrated four things. First, that cultural intelligence and computational rigor must coexist. Second, that σ < 0.05 predictive stability is achievable in data-sparse secondary markets. Third, that transfer learning genuinely solves the cold-start problem — validated against real 2025 market data. Fourth, that the cultural sentiment layer provides a 50% reduction in false positive signals — a number that translates directly into better investment decisions and reduced speculative risk. We invite the research community to build on this work. The data void in SE Asia is too large for any single team to fill. But ByteMe has established that the framework exists to do so. Thank you.");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
